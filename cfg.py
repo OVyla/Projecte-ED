@@ -9,7 +9,6 @@ import os
 import os.path
 import uuid
 
-
 #############################################################################
 #
 # Secció de CONFIGURACIÓ
@@ -18,7 +17,7 @@ import uuid
 
 # Selecció del vostre PATH amb els arxius media
 #
-ROOT_DIR  = r"E:\_UAB\ED\MP4-CORPUS"             # Windows
+ROOT_DIR = r"E:\_UAB\ED\MP4-CORPUS"  # Windows
 #ROOT_DIR = r"/opt/_uab/ed/mp4-corpus"           # Linux
 #ROOT_DIR = r"/Users/usuari/_uab/ed/mp4-corpus"  # MacOS
 #
@@ -47,12 +46,16 @@ PLAY_MODE = 1
 
 _running_platform = platform.system()
 
-if   _running_platform == "Windows" : _rsys = 1
-elif _running_platform == "Linux"   : _rsys = 2
-elif _running_platform == "Darwin"  : _rsys = 3
-else                                : _rsys = 0
+if _running_platform == "Windows":
+    _rsys = 1
+elif _running_platform == "Linux":
+    _rsys = 2
+elif _running_platform == "Darwin":
+    _rsys = 3
+else:
+    _rsys = 0
 
-if _rsys > 0 :
+if _rsys > 0:
     print("Running on: " + _running_platform + " ({})\n".format(_rsys))
 else:
     print("ERROR: Platform unknown!")
@@ -67,9 +70,11 @@ def get_root() -> str:
     """Retorna el local pathname complet de la col·lecció d'arxius."""
     return os.path.realpath(ROOT_DIR)
 
+
 def get_uuid(filename: str = "") -> str:
     """Retorna el UUID d'un path."""
     return uuid.uuid5(uuid.NAMESPACE_URL, filename)
+
 
 def get_canonical_pathfile(filename: str) -> str:
     """Retorna el pathname relatiu amb un format universal."""
@@ -77,15 +82,16 @@ def get_canonical_pathfile(filename: str) -> str:
     file = os.path.normpath(filename)
     file = os.path.relpath(file, ROOT_DIR)
     file = file.replace(os.sep, '/')
-    return  file
+    return file
+
 
 def get_one_file(mode: int = 0) -> str:
     """Retorna el local pathname complet del darrer arxiu a la col·lecció."""
     """Si el valor és 1 retorna l'arxiu per defecte envers cercar-lo."""
     """Funció d'exemple, no utilizar a la pràctica directament!"""
     file = os.path.realpath(os.path.join(ROOT_DIR, MP4_DEFAULT))
-    print("get_one_file(): ", ROOT_DIR , MP4_DEFAULT, file )
-    if mode != 1 :
+    print("get_one_file(): ", ROOT_DIR, MP4_DEFAULT, file)
+    if mode != 1:
         for root, dirs, files in os.walk(ROOT_DIR):
             for filename in files:
                 if filename.lower().endswith(tuple(['.mp4'])):
@@ -93,4 +99,3 @@ def get_one_file(mode: int = 0) -> str:
                     file = os.path.join(root, filename)
     print("        select: " + file + "\n")
     return file
-
