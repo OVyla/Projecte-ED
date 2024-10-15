@@ -17,7 +17,7 @@ import uuid
 
 # Selecció del vostre PATH amb els arxius media
 #
-ROOT_DIR = r"E:\_UAB\ED\MP4-CORPUS"  # Windows
+ROOT_DIR = r"C:\\Users\\Oriol\\PycharmProjects\\Projecte-ED"  # Windows
 #ROOT_DIR = r"/opt/_uab/ed/mp4-corpus"           # Linux
 #ROOT_DIR = r"/Users/usuari/_uab/ed/mp4-corpus"  # MacOS
 #
