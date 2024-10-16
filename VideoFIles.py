@@ -27,6 +27,9 @@ class VideoFiles:
     def get_files(self) -> list:
         return self._files
 
+    def __getitem__(self, item: int) -> str:
+        return self._files[item]
+
     def files_added(self) -> list:
 
         files_added = []
