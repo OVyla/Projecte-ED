@@ -9,7 +9,7 @@ class VideoID:
     """
 
     def __init__(self):
-        self._uuid = {}  # clau: valor, valor: file
+        self._uuid = {}  # clau: uuid, valor: file
 
     def generate_uuid(self, file: str) -> str:
         try:
@@ -31,18 +31,47 @@ class VideoID:
         except Exception as e:
             print("VideoID, get_uuid error: ", e)
 
-    def remove_uuid(self, file: str) -> None:
+    def get_path(self, uuid: str) -> str:
         try:
-            del self._uuid[cfg.get_uuid(cfg.get_canonical_pathfile(file))]
+            return self._uuid[uuid]
+        except Exception:
+            resposta = "uuid no trobat"
+            return resposta
+
+    def remove_uuid(self, uuid: str) -> None:
+        try:
+            del self._uuid[uuid]
 
         except Exception as e:
             print("VideoID, remove_uuid error: ", e)
 
 
+def main():
+    print('Generant VideoId')
+    v_id = VideoID()
+    print()
+    
+    path_file = '/Users/aliciamartilopez/Desktop/ED/PROJECTE/P0/Videos/Doraemon Opening 1 (Català) (360p).mp4'
+    
+    print('Generant uuid pel video Doraemon.mp4:', v_id.generate_uuid(path_file))
+    print()
+    uuid = v_id.get_uuid(path_file)
+    print('Tornant a generar uuid pel video Doraemon.mp4:', v_id.generate_uuid(path_file))
+    print()
+    
+    print('Comprovant mètode get_uuid pel video Doraemon.mp4:',v_id.get_uuid(path_file))
+    print()
+    
+    v_id.remove_uuid(uuid)
+    print('Esborrant uuid pel video Doraemon.mp4:',v_id.get_uuid(path_file))
+    print()
+    print('Tornant a esborrar Doraemon.mp4: '+v_id.remove_uuid(uuid))
+    print()
+    
+    print('Fet!')
+    
+    
+
+
 if __name__ == "__main__":
-    print("run")
-    vf = VideoFIles.VideoFiles()
-    vf.reload_fs(cfg.get_root())
-    print(vf)
-    vid = VideoID()
-    vid.generate_uuid(vf[0])
+    main()
