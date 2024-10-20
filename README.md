@@ -9,4 +9,5 @@ Aquesta pràctica es pot catalogar dintre del conjunt d’aplicatius anomenats G
 - Gestió de llistes de reproducció M3U dels vídeos d’una determinada col·lecció.
 - Reproducció dels vídeos en format mp4.
 - Recomanacions basades en cerques i creuament de metadades.
+
 Dintre d’aquest domini la pràctica desenvolupada haurà de realitzar amb la suficient eficiència les tasques que s’aniran descrivint. Mostrant així la utilitat de fer servir estructures de dades complexes per augmentar el rendiment del processament de dades. A més, no només el rendiment haurà de ser suficientment bo, sinó que la implementació a baix nivell de les estructures de dades haurà de ser correcta i robusta. Això es comprovarà realitzant una sèrie de tests que avaluaran l’execució —incloent casos extrems— dintre d’un corpus de vídeos donat (a banda de l’òbvia depuració i les proves que vosaltres ja heu de fer habitualment durant el desenvolupament).
