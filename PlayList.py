@@ -2,10 +2,12 @@
 # CLASSE PLAYLIST
 
 
-import VideoID
+from VideoID import VideoID
 import uuid
-import VideoPlayer
+from VideoPlayer import VideoPlayer
+from VideoData import *
 import cfg
+import vlc
 
 class PlayList():
     """
@@ -16,9 +18,15 @@ class PlayList():
     
     """
 
-    def __init__(self):
-        self.videos = []
+    def __init__(self, videos=None):
+        if videos is None:
+            self.videos = []
+        else:
+            self.videos = videos
+
+
         
+
         #enllaçar llistes
         self.next = None
 
@@ -34,10 +42,10 @@ class PlayList():
                     self.videos.append(uuid_video)
 
 
-    def play(self) -> None:
-        player = VideoPlayer()
+    def play(self, videodata, video_id) -> None:
         for video in self.videos:
-            player.play_video(video, cfg.PLAY_MODE)
+            player = VideoPlayer(videodata, video_id)
+            player.play_video(str(video), cfg.PLAY_MODE)
             
         # playlist enllaçada
         if self.next is not None:
@@ -58,5 +66,37 @@ class PlayList():
     def next(self, playlist):
         self.next = playlist
         
-        
-        
+
+
+def main():
+    # Crear una instancia de PlayList
+    playlist = PlayList()
+    
+    print("Generant UUIDs...")
+    video1_path = "/Users/clara/Documentos/2º GED/ED/projecte/corpus/Beyond/2575_galaxy_Space_Milky_Way_GalaxyWithCustomization720p5000br.mp4"
+    video2_path = "/Users/clara/Documentos/2º GED/ED/projecte/videos/Doraemon Opening 1 (Català) (360p).mp4"
+   
+    video_id = VideoID()
+    # Generar UUIDs
+    uuid1 = video_id.generate_uuid(video1_path)
+    uuid2 = video_id.generate_uuid(video2_path)
+
+    video_data = VideoData()
+
+    # metadades
+    video_data.add_video(uuid1, video1_path)
+    video_data.add_video(uuid2, video2_path)
+
+    # Afegir UUIDs a la playlist
+    print("Afegint videos a la playlist...")
+    playlist.add_video_at_end(uuid1)
+    playlist.add_video_at_end(uuid2)
+
+    # Reproducció
+    print("Reproduint videos...")
+    playlist.play(video_data, video_id)
+
+    print("Final!")
+
+main()
+
