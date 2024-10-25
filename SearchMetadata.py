@@ -12,13 +12,13 @@ class SearchMetadata:
     """
     
     def __init__(self, videodata):
-        self.videodata = videodata   # objecte VideoData
+        self._videodata = videodata   # objecte VideoData
 
     def duration(self, min: int, max: int) -> None:
         uuids = []
         
-        for uuid in self.videodata._files:
-            duration = self.videodata.get_duration(uuid)
+        for uuid in self._videodata._files:
+            duration = self._videodata.get_duration(uuid)
             
             if min <= int(duration) and int(duration) <= max:
                 uuids.append(uuid)
@@ -29,8 +29,8 @@ class SearchMetadata:
     def title(self, sub: str) -> list:
         uuids = []
         
-        for uuid in self.videodata._files:
-            title = self.videodata.get_title(uuid)
+        for uuid in self._videodata._files:
+            title = self._videodata.get_title(uuid)
 
             if title and sub.lower() in str(title).lower():   # comprobem també que existeix un titol
                 uuids.append(uuid)
@@ -41,8 +41,8 @@ class SearchMetadata:
     def album(self, sub: str) -> list:
         uuids = []
         
-        for uuid in self.videodata._files:
-            album = self.videodata.get_album(uuid)
+        for uuid in self._videodata._files:
+            album = self._videodata.get_album(uuid)
             
             if album and sub.lower() in album.lower():
                 uuids.append(uuid)
@@ -53,8 +53,8 @@ class SearchMetadata:
     def artist(self, sub: str) -> list:
         uuids = []
         
-        for uuid in self.videodata._files:
-            artist = self.videodata.get_artist(uuid)
+        for uuid in self._videodata._files:
+            artist = self._videodata.get_artist(uuid)
             
             if artist and sub.lower() in str(artist).lower():
                 uuids.append(uuid)
@@ -65,8 +65,8 @@ class SearchMetadata:
     def composer(self, sub: str) -> list:
         uuids = []
         
-        for uuid in self.videodata._files:
-            composer = self.videodata.get_composer(uuid)
+        for uuid in self._videodata._files:
+            composer = self._videodata.get_composer(uuid)
             
             if composer and sub.lower() in composer.lower():
                 uuids.append(uuid)
@@ -77,8 +77,8 @@ class SearchMetadata:
     def genre(self, sub: str) -> list:
         uuids = []
         
-        for uuid in self.videodata._files:
-            genre = self.videodata.get_genre(uuid)
+        for uuid in self._videodata._files:
+            genre = self._videodata.get_genre(uuid)
             
             if genre and sub.lower() in genre.lower():
                 uuids.append(uuid)
@@ -89,8 +89,8 @@ class SearchMetadata:
     def date(self, sub: str) -> list:
         uuids = []
         
-        for uuid in self.videodata._files:
-            date = self.videodata.get_date(uuid)
+        for uuid in self._videodata._files:
+            date = self._videodata.get_date(uuid)
             
             if date and sub.lower() in str(date).lower():
                 uuids.append(uuid)
@@ -101,8 +101,8 @@ class SearchMetadata:
     def comment(self, sub: str) -> list:
         uuids = []
         
-        for uuid in self.videodata._files:
-            comment = self.videodata.get_comment(uuid)
+        for uuid in self._videodata._files:
+            comment = self._videodata.get_comment(uuid)
             
             if comment and sub.lower() in comment.lower():
                 uuids.append(uuid)
