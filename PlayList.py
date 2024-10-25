@@ -20,15 +20,15 @@ class PlayList():
 
     def __init__(self, videos=None):
         if videos is None:
-            self.videos = []
+            self._videos = []
         else:
-            self.videos = videos
+            self._videos = videos
 
 
         
 
         #enllaçar llistes
-        self.next = None
+        self._next = None
 
     def load_file(self, file: str) -> None:
         f = open(file, 'r')
@@ -39,32 +39,32 @@ class PlayList():
                 uuid_video = VideoID.get_uuid(linia)
                     
                 if uuid:
-                    self.videos.append(uuid_video)
+                    self._videos.append(uuid_video)
 
 
     def play(self, videodata, video_id) -> None:
-        for video in self.videos:
+        for video in self._videos:
             player = VideoPlayer(videodata, video_id)
             player.play_video(str(video), cfg.PLAY_MODE)
             
         # playlist enllaçada
-        if self.next is not None:
-            self.next.play()
+        if self._next_playlist is not None:
+            self._next_playlist.play()
         
 
     def add_video_at_end(self, uuid: str) -> None:
-        self.videos.append(uuid)
+        self._videos.append(uuid)
 
     def remove_first_video(self) -> None:
-        self.videos.pop(0)
+        self._videos.pop(0)
 
     def remove_last_video(self) -> None:
-        self.videos.pop(-1)
+        self._videos.pop(-1)
     
     
     # enllaçar llistes
-    def next(self, playlist):
-        self.next = playlist
+    def _next_playlist(self, playlist):
+        self._next = playlist
         
 
 
