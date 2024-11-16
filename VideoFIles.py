@@ -57,6 +57,9 @@ class VideoFiles:
                 self._removed.append(file)
 
         return self._removed
+    
+    def __str__(self):
+        pass
 
 
 def main():

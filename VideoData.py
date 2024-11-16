@@ -67,6 +67,15 @@ class VideoData:
 
     def get_comment(self, uuid: str) -> str:
         return self._get_metadata_field(uuid, 'comment')
+    def get_filename(self, uuid:str) -> str:
+        """"retorna el string del filename guardat"""
+        return self._files[uuid]
+    
+    def __len__(self):
+        return len(self._files) ###nosesihadeferaixo
+    
+    def __str__(self):
+        pass
 
 
 def main():

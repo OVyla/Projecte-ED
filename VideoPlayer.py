@@ -54,6 +54,9 @@ class VideoPlayer:
         if mode > 0:
             file = self._video_id.get_path(uuid)
             self.play_file(file)
+    
+    def __str__(self):
+        pass
 
 
 def main():

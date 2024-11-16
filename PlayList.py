@@ -19,43 +19,22 @@ class PlayList():
     
     """
 
-    def __init__(self, videos=None):
+    def __init__(self, video_id, video_player, videos = None):
         if videos is None:
             self.videos = []
         else:
             self.videos = videos
-
-        self._root = cfg.get_root()
-    
-        self._v_files = VideoFiles(self._root)
-        self._v_id = VideoID()
-        self._v_data = VideoData()
-    
-        videos_afegits = self._v_files.files_added()
-        for path in videos_afegits:
-            self._v_id.generate_uuid(path)
-            uuid = self._v_id.get_uuid(path)
-            self._v_data.add_video(uuid, path)
-            self._v_data.load_metadata(uuid)
-        self._v_files.reload_fs(self._root)
-    
-        self._v_player = VideoPlayer(self._v_data, self._v_id)
-                
-        #enllaçar llistes
+        self._v_id = video_id
+        self._v_player = video_player
         self._next = None
 
     def load_file(self, file: str) -> None:
         f = open(file, 'r')
         
         for linia in f:
-                
             if not linia.startswith("#") and linia.endswith(".mp4"):   # saltar linies que son comentaris
                 self._v_id.generate_uuid(linia)
                 uuid_video = self._v_id.get_uuid(linia)
-                self._v_data.add_video(uuid_video, linia)
-                self._v_data.load_metadata(uuid_video)
-                self._v_files.reload_fs(self._root)
-                    
                 if uuid_video:
                     self.videos.append(uuid_video)
 
@@ -81,6 +60,12 @@ class PlayList():
     # enllaçar llistes
     def next_playlist(self, playlist):
         self._next = playlist
+    
+    def __len__(self):
+        pass
+    
+    def __str__(self):
+        pass
         
 
 
@@ -129,3 +114,44 @@ def main():
 if __name__ == "__main__":
     main()
         
+### main i load_file d'abans
+"""def __init__(self, videos=None):
+        if videos is None:
+            self.videos = []
+        else:
+            self.videos = videos
+
+        self._root = cfg.get_root()
+    
+        self._v_files = VideoFiles(self._root)
+        self._v_id = VideoID()
+        self._v_data = VideoData()
+    
+        videos_afegits = self._v_files.files_added()
+        for path in videos_afegits:
+            self._v_id.generate_uuid(path)
+            uuid = self._v_id.get_uuid(path)
+            self._v_data.add_video(uuid, path)
+            self._v_data.load_metadata(uuid)
+        self._v_files.reload_fs(self._root)
+    
+        self._v_player = VideoPlayer(self._v_data, self._v_id)
+                
+        #enllaçar llistes
+        self._next = None
+
+    def load_file(self, file: str) -> None:
+        f = open(file, 'r')
+        
+        for linia in f:
+                
+            if not linia.startswith("#") and linia.endswith(".mp4"):   # saltar linies que son comentaris
+                self._v_id.generate_uuid(linia)
+                uuid_video = self._v_id.get_uuid(linia)
+                self._v_data.add_video(uuid_video, linia)
+                self._v_data.load_metadata(uuid_video)
+                self._v_files.reload_fs(self._root)
+                    
+                if uuid_video:
+                    self.videos.append(uuid_video)
+"""

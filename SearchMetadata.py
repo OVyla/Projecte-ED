@@ -109,6 +109,8 @@ class SearchMetadata:
                 
         return uuids
     
+    def __str__(self):
+        pass
     
     # OPERADORS AND I OR
     

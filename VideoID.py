@@ -44,6 +44,9 @@ class VideoID:
 
         except Exception as e:
             print("VideoID, remove_uuid error: ", e)
+    
+    def __str__(self):
+        pass
 
 
 def main():
