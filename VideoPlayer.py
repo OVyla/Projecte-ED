@@ -14,9 +14,8 @@ from VideoFiles import *
 from VideoID import *
 
 class VideoPlayer:
-    def __init__(self, video_data, video_id):
+    def __init__(self, video_data):
         self._video_data = video_data
-        self._video_id = video_id
 
     def print_video(self, uuid: str) -> None:
         print("Duració:", self._video_data.get_duration(uuid))
@@ -30,7 +29,7 @@ class VideoPlayer:
 
     def play_file(self, file: str) -> None:
         
-        uuid = self._video_id.get_uuid(file)
+        uuid = cfg.get_uuid(cfg.get_canonical_pathfile(file))
         duracio = self._video_data.get_duration(uuid)
         
         player = vlc.MediaPlayer(file)
@@ -52,7 +51,7 @@ class VideoPlayer:
         if mode < 2:
             self.print_video(uuid)
         if mode > 0:
-            file = self._video_id.get_path(uuid)
+            file = self._video_data.get_filename(uuid)
             self.play_file(file)
     
     def __str__(self):
