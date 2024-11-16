@@ -1,5 +1,6 @@
 import tinytag
 import numpy as np
+import cfg
 
 class VideoData:
     def __init__(self):
@@ -67,6 +68,7 @@ class VideoData:
 
     def get_comment(self, uuid: str) -> str:
         return self._get_metadata_field(uuid, 'comment')
+    
     def get_filename(self, uuid:str) -> str:
         """"retorna el string del filename guardat"""
         return self._files[uuid]
@@ -78,7 +80,9 @@ class VideoData:
         pass
 
 
-def main():
+
+
+"""def main():
     vd = VideoData()
     uuid = '5f665e9e-16ea-5e5f-9d93-91c802c81618'
     
@@ -113,3 +117,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""

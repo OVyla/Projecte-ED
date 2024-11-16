@@ -9,9 +9,9 @@ Created on Wed Oct 16 16:29:17 2024
 import vlc
 import time
 import cfg
-from VideoData import *
-from VideoFiles import *
-from VideoID import *
+import VideoData 
+import VideoFiles 
+import VideoID 
 
 class VideoPlayer:
     def __init__(self, video_data):
@@ -56,8 +56,7 @@ class VideoPlayer:
     
     def __str__(self):
         pass
-
-
+"""
 def main():
     root = cfg.get_root()
     
@@ -85,3 +84,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""

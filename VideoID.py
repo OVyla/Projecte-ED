@@ -9,47 +9,60 @@ class VideoID:
     """
 
     def __init__(self):
-        self._uuid = {}  # clau: uuid, valor: file
+        self._files = {}  # clau: path, valor: uuid
 
     def generate_uuid(self, file: str) -> str:
         try:
-            uuid = cfg.get_uuid(cfg.get_canonical_pathfile(file))
-            if uuid in self._uuid:
-                print("VideoID, generate_uuid: UUID already exists! ", file, "Will not be used.")
-                return None
+            if file in self._files:
+                resposta = 'Ja existeix un uuid pel fitxer: '+file
+                return resposta
             else:
-                self._uuid[uuid] = file
-                return uuid
-
+                uuid = cfg.get_uuid(cfg.get_canonical_pathfile(file))
+                if uuid in self._files.values():
+                    resposta = "L'uuid generat ha colisionat amb un uuid creat anteriorment. Operació cancelada."
+                    return resposta
+                else:
+                    self._files[file] = uuid
+                    return uuid
         except Exception as e:
-            print("VideoID, generate_uuid error: ", e)
+            return("VideoID, generate_uuid error: ", e)
 
     def get_uuid(self, file: str) -> str:
         try:
-            return self._uuid[cfg.get_uuid(cfg.get_canonical_pathfile(file))]
+            return self._files[file]
 
-        except Exception as e:
-            print("VideoID, get_uuid error: ", e)
-
+        except Exception:
+            resposta = "No s'ha trobat cap uuid pel fitxer: "+file
+            return resposta
+    
     def get_path(self, uuid: str) -> str:
         try:
-            return self._uuid[uuid]
+            for key, val in self._files.items():
+                if val == uuid:
+                    return key
+            return None
+
         except Exception:
             resposta = "uuid no trobat"
             return resposta
 
     def remove_uuid(self, uuid: str) -> None:
         try:
-            del self._uuid[uuid]
-
-        except Exception as e:
-            print("VideoID, remove_uuid error: ", e)
+            for key, val in self._files.items():
+                if val == uuid:
+                    path = self.get_path(uuid)
+                    del self._files[path]
+                    return None
+            raise Exception()
+        except:
+            resposta = "No es pot eliminar uuid si no es troba"
+            return resposta
     
     def __str__(self):
         pass
 
 
-def main():
+"""def main():
     print('Generant VideoId')
     v_id = VideoID()
     print()
@@ -77,4 +90,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()"""

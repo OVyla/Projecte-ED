@@ -2,17 +2,14 @@
 from VideoData import VideoData
 
 
+
+import VideoData 
+import cfg
+
+
 class SearchMetadata:
-    """
-    OBJECTIU: Realitzar cerques que generen llistes de vídeos.
-    
-    RESPONSABILITAT: Consulta les metadades dins la col·lecció de vídeos
-    i proporciona funcions per a manipular llistes d’arxius de vídeo.
-    
-    """
-    
     def __init__(self, videodata):
-        self._videodata = videodata   # objecte VideoData
+        self._videodata = videodata
 
     def duration(self, min: int, max: int) -> None:
         uuids = []
@@ -24,7 +21,6 @@ class SearchMetadata:
                 uuids.append(uuid)
                 
         return uuids
-    
 
     def title(self, sub: str) -> list:
         uuids = []
@@ -36,7 +32,6 @@ class SearchMetadata:
                 uuids.append(uuid)
                 
         return uuids
-    
 
     def album(self, sub: str) -> list:
         uuids = []
@@ -48,7 +43,6 @@ class SearchMetadata:
                 uuids.append(uuid)
                 
         return uuids
-    
 
     def artist(self, sub: str) -> list:
         uuids = []
@@ -61,7 +55,6 @@ class SearchMetadata:
                 
         return uuids
 
-
     def composer(self, sub: str) -> list:
         uuids = []
         
@@ -72,7 +65,6 @@ class SearchMetadata:
                 uuids.append(uuid)
                 
         return uuids
-    
 
     def genre(self, sub: str) -> list:
         uuids = []
@@ -84,7 +76,6 @@ class SearchMetadata:
                 uuids.append(uuid)
                 
         return uuids
-    
 
     def date(self, sub: str) -> list:
         uuids = []
@@ -96,7 +87,6 @@ class SearchMetadata:
                 uuids.append(uuid)
                 
         return uuids
-    
 
     def comment(self, sub: str) -> list:
         uuids = []
@@ -120,7 +110,8 @@ class SearchMetadata:
                     
     def or_operator(self, list1: list, list2: list)  -> list:
         return list(set(list1) or set(list2))
-    
+
+"""
     
 
 def main():
@@ -145,3 +136,4 @@ def main():
 
 main()
 
+"""

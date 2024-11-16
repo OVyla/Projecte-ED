@@ -1,23 +1,14 @@
 
-# CLASSE PLAYLIST
-
-from VideoID import VideoID
-from VideoFIles import VideoFiles
-import uuid
-from VideoPlayer import VideoPlayer
-from VideoData import *
+import VideoID 
+#import VideoFiles 
+#import uuid
+import VideoPlayer 
+#import VideoData 
 import cfg
-import vlc
-import os
+#import vlc
+#import os
 
-class PlayList():
-    """
-    OBJECTIU: Guardar una llista de vídeos.
-    
-    RESPONSABILITAT: Crear una llista de vídeos i guardar els UUID d’aquests.
-    També es poden reproduir els arxius que hi ha dins la llista.
-    
-    """
+class PlayList:
 
     def __init__(self, video_id, video_player, videos = None):
         if videos is None:
@@ -37,7 +28,21 @@ class PlayList():
                 uuid_video = self._v_id.get_uuid(linia)
                 if uuid_video:
                     self.videos.append(uuid_video)
-
+    
+    def load_file2(self, file: str) -> None:
+        f = open(file, 'r')
+        
+        for linia in f:
+                
+            if not linia.startswith("#") and linia.endswith(".mp4"):   # saltar linies que son comentaris
+                self._v_id.generate_uuid(linia)
+                uuid_video = self._v_id.get_uuid(linia)
+                self._v_data.add_video(uuid_video, linia)
+                self._v_data.load_metadata(uuid_video)
+                self._v_files.reload_fs(self._root)
+                    
+                if uuid_video:
+                    self.videos.append(uuid_video)
 
     def play(self) -> None:
         for video in self.videos:
@@ -46,7 +51,6 @@ class PlayList():
         # playlist enllaçada
         if self._next is not None:
             self._next.play()
-        
 
     def add_video_at_end(self, uuid: str) -> None:
         self.videos.append(uuid)
@@ -57,7 +61,6 @@ class PlayList():
     def remove_last_video(self) -> None:
         self.videos.pop(-1)
     
-    # enllaçar llistes
     def next_playlist(self, playlist):
         self._next = playlist
     
@@ -68,7 +71,7 @@ class PlayList():
         pass
         
 
-
+"""
 def main():
     # Crear una instancia de PlayList
     print("Creant playlist...")
@@ -115,7 +118,7 @@ if __name__ == "__main__":
     main()
         
 ### main i load_file d'abans
-"""def __init__(self, videos=None):
+def __init__(self, videos=None):
         if videos is None:
             self.videos = []
         else:

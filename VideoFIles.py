@@ -3,6 +3,15 @@ import os
 import shutil
 
 
+# -*- coding: utf-8 -*-
+"""
+VideoFiles.py : ** REQUIRED ** El vostre codi de la classe VideoFiles.
+"""
+import cfg
+import os
+#import shutil
+
+
 class VideoFiles:
     """
     OBJECTIU: Guardar la col·lecció dels arxius MP4.
@@ -10,8 +19,8 @@ class VideoFiles:
                     dels MP4 existents dins la col·lecció de vídeos.
     """
 
-    def __init__(self):
-        self._root = ''
+    def __init__(self, root:str):
+        self._root = root
         self._files = []
         self._added = []
         self._removed = []
@@ -55,13 +64,14 @@ class VideoFiles:
         for file in self._files:
             if not os.path.isfile(file) and file not in self._removed:
                 self._removed.append(file)
-
         return self._removed
     
     def __str__(self):
-        pass
+        cad = '________VIDEO FILES_____\n'
+        cad += 'Num fitxers llegits: '+str(len(self._files))
+        return cad
 
-
+"""
 def main():
     # Inicialitzem la classe VideoFiles
     vf = VideoFiles()
@@ -116,3 +126,4 @@ def main():
 if __name__ == "__main__":
     main()
 
+"""
