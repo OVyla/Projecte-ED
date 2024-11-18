@@ -1,17 +1,46 @@
 
 from VideoData import VideoData
-
-
-
-import VideoData 
 import cfg
 
 
 class SearchMetadata:
     def __init__(self, videodata):
         self._videodata = videodata
+        
+        
+    def search_by_attribute(self, attribute: str, sub: str) -> list:
+        if not sub:
+            print("ValueError: Valor de cerca necessari")
+            return []
+        if sub is None or not isinstance(sub, str):
+            print("Valor invalid de cerca")
+            return None
+            
+        if sub == "":
+            print("Valor invalid de cerca")
+            return None
+
+            
+        uuids = []
+        for uuid in self._videodata._files:
+            try:
+                value = getattr(self._videodata, f"get_{attribute}")(uuid)
+            except Exception as e:
+                print(f"Error with UUID {uuid}: {e}")
+            
+            if value and sub.lower() in str(value).lower():
+                uuids.append(uuid)
+                
+        return uuids
+            
 
     def duration(self, min: int, max: int) -> None:
+        
+            
+        if min<0 or max<0 or min>max:
+            print("ValueError: Valors invalids")
+            return None
+        
         uuids = []
         
         for uuid in self._videodata._files:
@@ -23,93 +52,39 @@ class SearchMetadata:
         return uuids
 
     def title(self, sub: str) -> list:
-        uuids = []
-        
-        for uuid in self._videodata._files:
-            title = self._videodata.get_title(uuid)
-
-            if title and sub.lower() in str(title).lower():   # comprobem també que existeix un titol
-                uuids.append(uuid)
-                
-        return uuids
+        return self.search_by_attribute("title", sub)
 
     def album(self, sub: str) -> list:
-        uuids = []
-        
-        for uuid in self._videodata._files:
-            album = self._videodata.get_album(uuid)
-            
-            if album and sub.lower() in album.lower():
-                uuids.append(uuid)
-                
-        return uuids
+        return self.search_by_attribute("album", sub)
 
     def artist(self, sub: str) -> list:
-        uuids = []
-        
-        for uuid in self._videodata._files:
-            artist = self._videodata.get_artist(uuid)
-            
-            if artist and sub.lower() in str(artist).lower():
-                uuids.append(uuid)
-                
-        return uuids
+        return self.search_by_attribute("artist", sub)
 
     def composer(self, sub: str) -> list:
-        uuids = []
-        
-        for uuid in self._videodata._files:
-            composer = self._videodata.get_composer(uuid)
-            
-            if composer and sub.lower() in composer.lower():
-                uuids.append(uuid)
-                
-        return uuids
+        return self.search_by_attribute("composer", sub)
 
     def genre(self, sub: str) -> list:
-        uuids = []
-        
-        for uuid in self._videodata._files:
-            genre = self._videodata.get_genre(uuid)
-            
-            if genre and sub.lower() in genre.lower():
-                uuids.append(uuid)
-                
-        return uuids
+        return self.search_by_attribute("genre", sub)
 
     def date(self, sub: str) -> list:
-        uuids = []
-        
-        for uuid in self._videodata._files:
-            date = self._videodata.get_date(uuid)
-            
-            if date and sub.lower() in str(date).lower():
-                uuids.append(uuid)
-                
-        return uuids
+        return self.search_by_attribute("date", sub)
 
     def comment(self, sub: str) -> list:
-        uuids = []
-        
-        for uuid in self._videodata._files:
-            comment = self._videodata.get_comment(uuid)
-            
-            if comment and sub.lower() in comment.lower():
-                uuids.append(uuid)
-                
-        return uuids
+        return self.search_by_attribute("comment", sub)
     
     def __str__(self):
-        pass
+        return str(self._videodata)
+    
+
     
     # OPERADORS AND I OR
     
     def and_operator(self, list1: list, list2: list)  -> list:
-        return list(set(list1) and set(list2))
+        return list(set(list1) & set(list2))
     
                     
     def or_operator(self, list1: list, list2: list)  -> list:
-        return list(set(list1) or set(list2))
+        return list(set(list1) | set(list2))
 
 """
     
