@@ -1,4 +1,3 @@
-
 import VideoID 
 #import VideoFiles 
 #import uuid
@@ -8,18 +7,35 @@ import cfg
 #import vlc
 #import os
 
-class PlayList:
+class PlayList():
 
-    def __init__(self, video_id, video_player, videos = None):
-        if videos is None:
-            self.videos = []
-        else:
-            self.videos = videos
+    def __init__(self, video_id, video_player):
+        
+        self._root = cfg.get_root()
+    
+        self._v_files = VideoFiles(self._root)
         self._v_id = video_id
+        self._v_data = video_player._video_data
         self._v_player = video_player
+        
+        videos_afegits = self._v_files.files_added()
+        for path in videos_afegits:
+            self._v_id.generate_uuid(path)
+            uuid = self._v_id.get_uuid(path)
+            if uuid:
+                self._v_data.add_video(uuid, path)
+                self._v_data.load_metadata(uuid)
+            
+        self._v_files.reload_fs(self._root)
+        
+        self.videos = []
+        
+        #enllaçar llistes
         self._next = None
 
     def load_file(self, file: str) -> None:
+        if not os.path.exists(file):
+            raise FileNotFoundError(f"L'arxiu {file} no existeix.")
         f = open(file, 'r')
         
         for linia in f:
@@ -30,45 +46,70 @@ class PlayList:
                     self.videos.append(uuid_video)
     
     def load_file2(self, file: str) -> None:
+        if not os.path.exists(file):
+            raise FileNotFoundError(f"L'arxiu {file} no existeix.")
         f = open(file, 'r')
         
-        for linia in f:
+        try:
+            for linia in f:
                 
-            if not linia.startswith("#") and linia.endswith(".mp4"):   # saltar linies que son comentaris
-                self._v_id.generate_uuid(linia)
-                uuid_video = self._v_id.get_uuid(linia)
-                self._v_data.add_video(uuid_video, linia)
-                self._v_data.load_metadata(uuid_video)
-                self._v_files.reload_fs(self._root)
+                if not linia.startswith("#") and linia.endswith(".mp4"):   # saltar linies que son comentaris
+                    self._v_id.generate_uuid(linia)
+                    uuid_video = self._v_id.get_uuid(linia)
+                    self._v_data.add_video(uuid_video, linia)
+                    self._v_data.load_metadata(uuid_video)
+                    self._v_files.reload_fs(self._root)
                     
-                if uuid_video:
-                    self.videos.append(uuid_video)
+                    if uuid_video:
+                        self.videos.append(uuid_video)
+        except Exception as e:
+            print(f"Error al llegir l'arxiu {file}: {e}")
 
+        
     def play(self) -> None:
-        for video in self.videos:
-            self._v_player.play_video(video, cfg.PLAY_MODE)
+        if len(self._videos) == 0:
+            print("Llista buida")
+        else:
+            for video in self.videos:
+                self._v_player.play_video(video, cfg.PLAY_MODE)
             
         # playlist enllaçada
         if self._next is not None:
             self._next.play()
 
     def add_video_at_end(self, uuid: str) -> None:
-        self.videos.append(uuid)
+        if uuid in self._v_data._files:
+            self.videos.append(uuid)
 
     def remove_first_video(self) -> None:
-        self.videos.pop(0)
+        """Elimina el primer vídeo de la llista."""
+        if self.videos:
+            self.videos.pop(0)
+        else:
+            print("ERROR: No hi ha vídeos per eliminar.")
 
     def remove_last_video(self) -> None:
-        self.videos.pop(-1)
+        if self.videos:
+            self.videos.pop(-1)
+        else:
+            print("ERROR: No hi ha vídeos per eliminar.")
     
     def next_playlist(self, playlist):
         self._next = playlist
-    
+        
     def __len__(self):
-        pass
-    
+        return len(self.videos)
+        
+        
     def __str__(self):
-        pass
+        """Representació de la playlist"""
+        if not self._videos:
+            return "Playlist buida."
+        
+        result = "Playlist:\n"
+        for idx, video in enumerate(self._videos):
+            result += f"{idx + 1}. {video}\n"
+        return result 
         
 
 """
