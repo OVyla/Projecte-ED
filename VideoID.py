@@ -1,6 +1,7 @@
-import cfg
-import VideoFIles
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+import cfg
 
 class VideoID:
     """
@@ -11,83 +12,42 @@ class VideoID:
     def __init__(self):
         self._files = {}  # clau: path, valor: uuid
 
-    def generate_uuid(self, file: str) -> str:
+    def generate_uuid(self, file="") -> str:
         try:
             if file in self._files:
-                resposta = 'Ja existeix un uuid pel fitxer: '+file
-                return resposta
+                print('Ja existeix uuid pel file')
+                return self._files[file]
             else:
                 uuid = cfg.get_uuid(cfg.get_canonical_pathfile(file))
                 if uuid in self._files.values():
-                    resposta = "L'uuid generat ha colisionat amb un uuid creat anteriorment. Operació cancelada."
-                    return resposta
+                    print("Nou uuid ha colisionat amb un uuid anterior. Operació cancelada.")
+                    return self._files[file]
                 else:
+                    print('uuid generat')
                     self._files[file] = uuid
                     return uuid
-        except Exception as e:
-            return("VideoID, generate_uuid error: ", e)
-
-    def get_uuid(self, file: str) -> str:
-        try:
-            return self._files[file]
-
         except Exception:
-            resposta = "No s'ha trobat cap uuid pel fitxer: "+file
-            return resposta
+            print("uuid no generat")
+            return 'None'
     
-    def get_path(self, uuid: str) -> str:
-        try:
-            for key, val in self._files.items():
-                if val == uuid:
-                    return key
-            return None
+    def get_uuid(self, file="") -> str:
+        return self._files.get(file)
 
-        except Exception:
-            resposta = "uuid no trobat"
-            return resposta
+    def _get_path(self, uuid: str) -> str:
+        for key, val in self._files.items():
+            if val == uuid:
+                return key
 
-    def remove_uuid(self, uuid: str) -> None:
+    def remove_uuid(self, uuid="") -> None:    
         try:
-            for key, val in self._files.items():
-                if val == uuid:
-                    path = self.get_path(uuid)
-                    del self._files[path]
-                    return None
-            raise Exception()
+            self._files.pop(self._get_path(uuid))
         except:
-            resposta = "No es pot eliminar uuid si no es troba"
-            return resposta
+            print("No es pot eliminar uuid.")
+        
+    def __len__(self) -> int:
+        return len(self._files)
     
-    def __str__(self):
-        pass
-
-
-"""def main():
-    print('Generant VideoId')
-    v_id = VideoID()
-    print()
-    
-    path_file = '/Users/aliciamartilopez/Desktop/ED/PROJECTE/P0/Videos/Doraemon Opening 1 (Català) (360p).mp4'
-    
-    print('Generant uuid pel video Doraemon.mp4:', v_id.generate_uuid(path_file))
-    print()
-    uuid = v_id.get_uuid(path_file)
-    print('Tornant a generar uuid pel video Doraemon.mp4:', v_id.generate_uuid(path_file))
-    print()
-    
-    print('Comprovant mètode get_uuid pel video Doraemon.mp4:',v_id.get_uuid(path_file))
-    print()
-    
-    v_id.remove_uuid(uuid)
-    print('Esborrant uuid pel video Doraemon.mp4:',v_id.get_uuid(path_file))
-    print()
-    print('Tornant a esborrar Doraemon.mp4: '+v_id.remove_uuid(uuid))
-    print()
-    
-    print('Fet!')
-    
-    
-
-
-if __name__ == "__main__":
-    main()"""
+    def __str__(self) -> str:
+        cad = '________VIDEO ID________\n'
+        cad += 'Num fitxers identificats: ' + str(len(self._files))
+        return cad
