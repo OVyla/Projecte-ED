@@ -2,53 +2,54 @@
 from VideoData import VideoData
 import cfg
 
-
 class SearchMetadata:
     def __init__(self, videodata):
         self._videodata = videodata
-        
-        
+
     def search_by_attribute(self, attribute: str, sub: str) -> list:
         if not sub:
             print("ValueError: Valor de cerca necessari")
             return []
         if sub is None or not isinstance(sub, str):
             print("Valor invalid de cerca")
-            return None
-            
+            return []
+
         if sub == "":
             print("Valor invalid de cerca")
-            return None
+            return []
 
-            
         uuids = []
         for uuid in self._videodata._files:
             try:
-                value = getattr(self._videodata, f"get_{attribute}")(uuid)
+                method = getattr(self._videodata, f"get_{attribute}", None)
+                if method is None or not callable(method):
+                    print(f"Attribute '{attribute}' does not exist or is not callable.")
+                    return []
+
+                value = method(uuid)
+                if value is not None and isinstance(value, (str, int, float)):
+                    if sub.lower() in str(value).lower():
+                        uuids.append(uuid)
             except Exception as e:
                 print(f"Error with UUID {uuid}: {e}")
-            
-            if value and sub.lower() in str(value).lower():
-                uuids.append(uuid)
-                
+                return []
+
         return uuids
-            
 
     def duration(self, min: int, max: int) -> None:
-        
-            
-        if min<0 or max<0 or min>max:
+
+        if min < 0 or max < 0 or min > max:
             print("ValueError: Valors invalids")
             return None
-        
+
         uuids = []
-        
+
         for uuid in self._videodata._files:
             duration = self._videodata.get_duration(uuid)
-            
+
             if min <= int(duration) and int(duration) <= max:
                 uuids.append(uuid)
-                
+
         return uuids
 
     def title(self, sub: str) -> list:
@@ -71,20 +72,19 @@ class SearchMetadata:
 
     def comment(self, sub: str) -> list:
         return self.search_by_attribute("comment", sub)
-    
+
     def __str__(self):
         return str(self._videodata)
-    
 
-    
     # OPERADORS AND I OR
-    
-    def and_operator(self, list1: list, list2: list)  -> list:
+
+    def and_operator(self, list1: list, list2: list) -> list:
         return list(set(list1) & set(list2))
-    
-                    
-    def or_operator(self, list1: list, list2: list)  -> list:
+
+    def or_operator(self, list1: list, list2: list) -> list:
         return list(set(list1) | set(list2))
+
+
 
 """
     
