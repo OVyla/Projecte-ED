@@ -23,6 +23,7 @@ class PlayList:
             
                             
     def load_file(self, file: str) -> None:
+        """Guarda els uuids dels videos continguts en l'arxiu M3U"""
         if not isinstance(file, str) or file.strip() == "":
             print(f"Arxiu no vàlid: {file}")
             return
@@ -51,6 +52,7 @@ class PlayList:
 
 
     def play(self, mode=1) -> None:
+        """Reprodueix tots els videos de la llista i els de la llista enllaçada"""
         if len(self.videos) == 0:
             print("Llista buida")
             
@@ -71,6 +73,7 @@ class PlayList:
 
 
     def add_video_at_end(self, uuid: str) -> None:
+        """Afegeix video al final de llista"""
         if not isinstance(uuid, str):
             print("uuid no valid")
             
@@ -89,6 +92,7 @@ class PlayList:
 
 
     def remove_last_video(self) -> None:
+        """Elimina ultim vídeo de la llista"""
         if self.videos:
             self.videos.pop(-1)
         else:
@@ -102,10 +106,8 @@ class PlayList:
     def get_next_playlist(self):
         return self._next
 
-        
     def __len__(self):
         return len(self.videos)
-        
         
     def __str__(self):
         """Representació de la playlist"""
@@ -116,8 +118,3 @@ class PlayList:
         for i, video in enumerate(self.videos):
             result += f"{i + 1}. {video}\n"
         return result 
-
-                    
-                if uuid_video:
-                    self.videos.append(uuid_video)
-"""
