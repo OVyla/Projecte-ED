@@ -14,70 +14,41 @@ class PlayList:
         self._v_id = VideoID
         self._v_data = VideoPlayer._video_data
         self._v_player = VideoPlayer
+        self.loaded_videos = []
         
         self.videos = []
         
         #enllaçar llistes
         self._next = None
             
-
-    def load_file(self, file: str) -> None:
-        if not isinstance(file,str):
-            print(f"arxiu {file} no és correcte")
-            
-        elif file == "":
-            print("Arxiu no valid")
-        
-        elif not os.path.exists(file):
-            raise FileNotFoundError(f"El archivo {file} no existe.")
-        
-        else:
-            with open(file, 'r') as f:
-                for line in f:
-                    if not line.startswith("#") and line.strip().endswith(".mp4"):  # Ignorar comentarios
-                        try:
-                            path = cfg.get_canonical_pathfile(line)
-                            if not self._v_id.get_uuid(path):
-                                self._v_id.generate_uuid(path)
-                                uuid = self._v_id.get_uuid(path)
-                                if uuid not in self.videos:
-                                    self._v_data.add_video(uuid, path)
-                                    self._v_data.load_metadata(uuid)
-                                    self.videos.append(uuid)
-                        
-                        except Exception as e:
-                            print(f"Error amb el arxiu {line}: {e}")
-        
-
-    def load_file2(self, file: str) -> None:
-        if not isinstance(file,str):
-            print(f"arxiu {file} no és correcte")
-            
-        elif file == "":
-            print("Arxiu no valid")
-            
-        elif not os.path.exists(file):
-            raise FileNotFoundError(f"arxiu {file} no existeix")
-        
-        else:   
-            with open(file, 'r') as f:
-                
-                for linia in f:
-                    
-                    if not linia.startswith("#") and linia.endswith(".mp4"):   # saltar linies que son comentaris
-                        try:
-                            self._v_id.generate_uuid(linia)
-                            uuid_video = self._v_id.get_uuid(linia)
                             
-                            if uuid_video and uuid_video not in self.videos:
-                                self._v_data.add_video(uuid_video, linia)
-                                self._v_data.load_metadata(uuid_video)
-                                self._v_files.reload_fs(self._root)
-                                self.add_video_at_end(uuid_video)
-    
-                        except Exception as e:
-                            print(f"Error al llegir l'arxiu {file}: {e}")
+    def load_file(self, file: str) -> None:
+        if not isinstance(file, str) or file.strip() == "":
+            print(f"Arxiu no vàlid: {file}")
+            return
+        
+        if not os.path.exists(file):
+            raise FileNotFoundError(f"L'arxiu {file} no existeix.")
+        
+        try:
+            with open(file, 'r') as f:
+                for linia in f:
+                    if not linia.startswith("#") and linia.endswith(".mp4"):
+                        path = cfg.get_canonical_pathfile(linia)
+                        if not os.path.exists(path):
+                            continue
+                        if not self._v_id.get_uuid(path):
+                            self._v_id.generate_uuid(path)
                         
+                        uuid = self._v_id.get_uuid(path)
+                        if uuid:
+                            self._v_data.add_video(uuid, path)
+                            self._v_data.load_metadata(uuid)
+                            self.add_video_at_end(uuid)
+                            
+        except Exception as e:
+            print(f"Error en carregar l'arxiu {file}: {e}")
+
 
     def play(self, mode=1) -> None:
         if len(self.videos) == 0:
@@ -107,7 +78,7 @@ class PlayList:
             self.videos.append(uuid)
         else:    
             print("ERROR: uuid no trobat")
-
+            
 
     def remove_first_video(self) -> None:
         """Elimina el primer vídeo de la llista."""
@@ -145,6 +116,7 @@ class PlayList:
         for i, video in enumerate(self.videos):
             result += f"{i + 1}. {video}\n"
         return result 
+
                     
                 if uuid_video:
                     self.videos.append(uuid_video)
