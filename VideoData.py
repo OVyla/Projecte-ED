@@ -1,110 +1,132 @@
-import tinytag
-import numpy as np
-import os
+# -*- coding: utf-8 -*-
 import cfg
-
+import os
+import sys
+import numpy
+import sys
+import tinytag
 
 class VideoData:
     def __init__(self):
-        self._files = {}
+        self._files={}
 
-    def add_video(self, uuid: str, file: str) -> None:
-        """Afegeix un nou vídeo amb el seu path al diccionari, sense metadades."""
-        if uuid in self._files:
-            print(f"El vídeo amb UUID {uuid} ja existeix.")
-            return 
+    def existeix_file(self, file):
+        return file in [v[0] for v in self._files.values()]
 
-        if not os.path.isfile(file):
-            print(f"El fitxer {file} no existeix.")
-            return 
-            
-        if not file.lower().endswith('.mp4'):
-            print("El fitxer no és compatible.")
-            return 
+    def add_video(self, uuid, file):
+        if not self.existeix_file(file):
+            path = os.path.join(os.path.join(cfg.get_root(), file))
+            self._files[uuid] = [file,path]
 
-        self._files[uuid] = {'path': file, 'metadata': None}
-
-    def remove_video(self, uuid: str) -> None:
-        """Elimina un vídeo pel seu UUID."""
-        if uuid in self._files:
+    def remove_video(self, uuid):
+        if uuid in self._files.keys(): 
             del self._files[uuid]
-        else:
-            print(f"El vídeo amb UUID {uuid} no existeix.")
 
-    def load_metadata(self, uuid: str) -> None:
-        """Carrega les metadades d'un arxiu MP4 i les guarda al diccionari."""
-        
-        if uuid not in self._files:
-            print(f"UUID {uuid} no trobat.")
-            return
-        
-        path = self._files[uuid]['path']
-        
-        try:
+    def load_metadata(self, uuid):
+        if self.existeix_uuid(uuid):
+            path = self._files[uuid][1]
             metadata = tinytag.TinyTag.get(path)
-            self._files[uuid]['metadata'] = metadata
+            if metadata is None:
+                print("ERROR: Arxiu MP4 erroni!")
+                sys.exit(1)
+            try:
+                self._files[uuid].append(numpy.ceil(metadata.duration))
+
+            except AttributeError:
+                duration = -1
             
-        except Exception as e:
-            print(f"No s'han pogut carregar les metadades per {path}: {e}")
-            return
-        
+            try:
+                self._files[uuid].append(metadata.title)
+            except AttributeError:
+                title = "None"
+         
+            try:
+                self._files[uuid].append(metadata.album)
+            except AttributeError:
+                album = "None"
 
-    def _get_metadata_field(self, uuid: str, field: str, default="None"):
-        """Funció interna per obtenir un camp de les metadades."""
-        if uuid not in self._files:
-            print(f"UUID {uuid} no trobat.")
-            return 
+            try:
+                self._files[uuid].append(metadata.artist)
+            except AttributeError:
+                artist = "None"
+            
+            try:
+                self._files[uuid].append(metadata.composer)
+            except AttributeError:
+                composer = "None"
+            
 
-        metadata = self._files[uuid]['metadata']
-        if metadata is None:
-            print("Les metadades no s'han carregat")
-            return 
-
-        return getattr(metadata, field, default)
-
-    def get_duration(self, uuid: str) -> int:
-        if uuid not in self._files:
-            print(f"UUID {uuid} no trobat.")
-            return None
-
-        metadata = self._files[uuid]['metadata']
-        if not metadata:
-            print("Les metadades no s'han carregat.")
-            return None
-
-        return int(np.ceil(metadata.duration))
-
-    def get_title(self, uuid: str) -> str:
-        return self._get_metadata_field(uuid, 'title')
-
-    def get_album(self, uuid: str) -> str:
-        return self._get_metadata_field(uuid, 'album')
-
-    def get_artist(self, uuid: str) -> str:
-        return self._get_metadata_field(uuid, 'artist')
-
-    def get_composer(self, uuid: str) -> str:
-        return self._get_metadata_field(uuid, 'composer')
-
-    def get_genre(self, uuid: str) -> str:
-        return self._get_metadata_field(uuid, 'genre')
-
-    def get_date(self, uuid: str) -> str:
-        return self._get_metadata_field(uuid, 'year')  # tinytag usa 'year' en lloc de 'date'
-
-    def get_comment(self, uuid: str) -> str:
-        return self._get_metadata_field(uuid, 'comment')
-
-    def get_filename(self, uuid: str) -> str:
-        """"retorna el string del filename guardat"""
-        if uuid not in self._files:
-            print(f"UUID {uuid} no trobat.")
-            return None
-        return self._files[uuid]['path']
-
+            try:
+                self._files[uuid].append(metadata.genre)
+            except AttributeError:
+                genre = "None"
+            
+            try:
+                self._files[uuid].append(metadata.year)
+            except AttributeError:
+                date = "None"
+            
+            try:
+                self._files[uuid].append(metadata.comment)
+            except AttributeError:
+                comment = "None"
+            
+ 
     def __len__(self):
-        return len(self._files) 
-        
-    def __str__(self):
-        pass
+        return len(self._files)
 
+    def existeix_uuid(self,uuid):
+        return uuid in self._files.keys()
+   
+    def existeix_meta(self,uuid):
+        if self.existeix_uuid(uuid):
+            m = len(self._files[uuid])
+            return m > 2
+       
+    def get_filename(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][0])
+   
+    def get_path(self,uuid):
+        if self.existeix_meta(uuid):
+            return self._files[uuid][1]
+   
+    def get_duration(self,uuid):
+        if self.existeix_meta(uuid):
+            return self._files[uuid][2]
+       
+    def get_title(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][3])
+       
+    def get_album(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][4])
+       
+    def get_artist(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][5])
+       
+    def get_composer(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][6])
+       
+    def get_genre(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][7])
+       
+    def get_date(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][8])
+
+    def get_comment(self,uuid):
+        if self.existeix_meta(uuid):
+            return str(self._files[uuid][9])
+   
+    def files(self):
+        return self._files
+    
+
+    def get_uuids(self) -> list:
+        """Retorna tots els UUIDs disponibles."""
+        return list(self._files.keys())
