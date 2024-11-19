@@ -1,25 +1,17 @@
-
-from VideoData import VideoData
+import VideoData
 import cfg
 
 class SearchMetadata:
-    def __init__(self, videodata):
+    def __init__(self, videodata: VideoData):
         self._videodata = videodata
 
     def search_by_attribute(self, attribute: str, sub: str) -> list:
-        if not sub:
-            print("ValueError: Valor de cerca necessari")
-            return []
-        if sub is None or not isinstance(sub, str):
-            print("Valor invalid de cerca")
-            return []
-
-        if sub == "":
-            print("Valor invalid de cerca")
+        if not sub or not isinstance(sub, str):
+            print("ValueError: Valor de cerca necessari i ha de ser un string.")
             return []
 
         uuids = []
-        for uuid in self._videodata._files:
+        for uuid in self._videodata.files():
             try:
                 method = getattr(self._videodata, f"get_{attribute}", None)
                 if method is None or not callable(method):
@@ -31,52 +23,41 @@ class SearchMetadata:
                     if sub.lower() in str(value).lower():
                         uuids.append(uuid)
             except Exception as e:
-                print(f"Error with UUID {uuid}: {e}")
-                return []
-
+                print(f"Error amb UUID {uuid}: {e}")
         return uuids
 
-    def duration(self, min: int, max: int) -> None:
-
+    def duration(self, min: int, max: int) -> list:
         if min < 0 or max < 0 or min > max:
-            print("ValueError: Valors invalids")
-            return None
+            print("ValueError: Valors de durada incorrectes")
+            return []
 
         uuids = []
-
-        for uuid in self._videodata._files:
+        for uuid in self._videodata.files():
             duration = self._videodata.get_duration(uuid)
-
-            if min <= int(duration) and int(duration) <= max:
+            if duration is not None and min <= duration <= max:
                 uuids.append(uuid)
-
         return uuids
 
-    def title(self, sub: str) -> list:
+    def title(self, sub="") -> list:
         return self.search_by_attribute("title", sub)
 
-    def album(self, sub: str) -> list:
+    def album(self, sub="") -> list:
         return self.search_by_attribute("album", sub)
 
-    def artist(self, sub: str) -> list:
+    def artist(self, sub="") -> list:
         return self.search_by_attribute("artist", sub)
 
-    def composer(self, sub: str) -> list:
+    def composer(self, sub="") -> list:
         return self.search_by_attribute("composer", sub)
 
-    def genre(self, sub: str) -> list:
+    def genre(self, sub="") -> list:
         return self.search_by_attribute("genre", sub)
 
-    def date(self, sub: str) -> list:
+    def date(self, sub="") -> list:
         return self.search_by_attribute("date", sub)
 
-    def comment(self, sub: str) -> list:
+    def comment(self, sub="") -> list:
         return self.search_by_attribute("comment", sub)
-
-    def __str__(self):
-        return str(self._videodata)
-
-    # OPERADORS AND I OR
 
     def and_operator(self, list1: list, list2: list) -> list:
         return list(set(list1) & set(list2))
@@ -84,31 +65,5 @@ class SearchMetadata:
     def or_operator(self, list1: list, list2: list) -> list:
         return list(set(list1) | set(list2))
 
-
-
-"""
-    
-
-def main():
-
-    # Classe VideData 
-    vd = VideoData()
-    uuid = '5f665e9e-16ea-5e5f-9d93-91c802c81618'
-    
-    # Afegir el vídeo
-    print('Afegint video...')
-    vd.add_video(uuid, '/Users/clara/Documentos/2º GED/ED/projecte/corpus/Beyond/2575_galaxy_Space_Milky_Way_GalaxyWithCustomization720p5000br.mp4')
-    # Carregar les metadades
-    print('\nCarregant metadades del video...')
-    vd.load_metadata(uuid)
-
-    s = SearchMetadata(vd)
-    # searcmetadata
-    print("Provant SearchMetadata:")
-    print("duracio: ", s.duration(0, 10))
-    print("title: ", s.title("il"))
-    print("date:", s.date("5"))
-
-main()
-
-"""
+    def __str__(self):
+        return str(self._videodata)
