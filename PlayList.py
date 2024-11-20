@@ -50,10 +50,7 @@ class PlayList:
         """Reprodueix tots els videos de la llista i els de la llista enllaçada"""
         if len(self.videos) == 0:
             print("Llista buida")
-            
-        elif not isinstance(mode, int):
-            print("mode incorrcecte")
-            
+
         else:
             for video in self.videos:
                 try:
@@ -62,9 +59,9 @@ class PlayList:
                     print("ERROR en la reproduccio del video")
                     continue
                 
-            # playlist enllaçada
-            if self._next:
-                self.get_next_playlist.play(mode)
+        # playlist enllaçada
+        if self._next:
+            self.get_next_playlist.play(mode)
 
 
     def add_video_at_end(self, uuid: str) -> None:
