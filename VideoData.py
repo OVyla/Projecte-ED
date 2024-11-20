@@ -3,18 +3,15 @@ import cfg
 import os
 import sys
 import numpy
-import sys
 import tinytag
 
 class VideoData:
     def __init__(self):
         self._files={}
 
-    def existeix_file(self, file):
-        return file in [v[0] for v in self._files.values()]
-
     def add_video(self, uuid, file):
-        if not self.existeix_file(file):
+        ll_files = [v[0] for v in self._files.values()]
+        if file not in ll_files:
             path = os.path.join(os.path.join(cfg.get_root(), file))
             self._files[uuid] = [file,path]
 
@@ -23,7 +20,7 @@ class VideoData:
             del self._files[uuid]
 
     def load_metadata(self, uuid):
-        if self.existeix_uuid(uuid):
+        if uuid in self._files.keys(): 
             path = self._files[uuid][1]
             metadata = tinytag.TinyTag.get(path)
             if metadata is None:
@@ -75,13 +72,9 @@ class VideoData:
     def __len__(self):
         return len(self._files)
 
-    def existeix_uuid(self,uuid):
-        return uuid in self._files.keys()
-   
     def existeix_meta(self,uuid):
-        if self.existeix_uuid(uuid):
-            m = len(self._files[uuid])
-            return m > 2
+        if uuid in self._files.keys(): 
+            return len(self._files[uuid]) > 2
        
     def get_filename(self,uuid):
         if self.existeix_meta(uuid):
