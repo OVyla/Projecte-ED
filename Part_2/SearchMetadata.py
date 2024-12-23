@@ -92,3 +92,9 @@ class SearchMetadata:
     
     def __lt__(self, other):
         return len(self._videodata) < len(other._videodata)
+    
+    def get_similar(uuid: str, max_list: int) -> list:
+        pass
+    
+    def get_auto_play(len: int) -> list:
+        pass

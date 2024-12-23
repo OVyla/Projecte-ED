@@ -4,6 +4,8 @@ import os
 import sys
 import numpy
 import tinytag
+import PlayList
+from collections.abc import Iterator
 
 class VideoData:
     __slots__ = ['_files']
@@ -145,3 +147,18 @@ class VideoData:
     
     def __lt__(self, other):
         return len(self._files) < len(other._files)
+    
+    def read_playlist(self, obf_playlist: PlayList):
+        pass
+    
+    def get_video_rank(self, uuid: str) -> int:
+        pass
+    
+    def get_next_videos(self, uuid: str):
+        pass
+    
+    def get_previous_videos(self,uuid: str):
+        pass
+    
+    def get_video_distance(self,uuid1:str,uuid2:str):
+        pass

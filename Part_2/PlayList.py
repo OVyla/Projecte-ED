@@ -129,3 +129,6 @@ class PlayList:
 
     def __lt__(self, other):
         return len(self.videos) < len(other.videos)
+    
+    def read_list(self, p_llista: list):
+        pass
