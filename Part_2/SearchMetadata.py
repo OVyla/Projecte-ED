@@ -4,16 +4,19 @@ import cfg
 class SearchMetadata:
 
     __slots__ = ['_videodata']
-    def __init__(self, videodata: VideoData):
-        self._videodata = videodata
-
+    
+    def __init__(self, *args):
+        if len(args) != 1 or not isinstance(args[0], VideoData.VideoData):
+            raise NotImplementedError
+        self._videodata = args[0]
+        
     def search_by_attribute(self, attribute: str, sub: str) -> list:
         if not sub or not isinstance(sub, str):
             print("ValueError: Valor de cerca necessari i ha de ser un string.")
             return []
 
         uuids = []
-        for uuid in self._videodata.files():
+        for uuid in self._videodata._get_uuids():
             try:
                 method = getattr(self._videodata, f"get_{attribute}", None)
                 if method is None or not callable(method):
@@ -29,16 +32,21 @@ class SearchMetadata:
         return uuids
 
     def duration(self, min: int, max: int) -> list:
+        if not isinstance(min, int) or not isinstance(max, int):
+            raise TypeError("Els valors de durada han de ser números.")
         if min < 0 or max < 0 or min > max:
             print("ValueError: Valors de durada incorrectes")
             return []
 
         uuids = []
-        for uuid in self._videodata.files():
+        for uuid in self._videodata:
             duration = self._videodata.get_duration(uuid)
             if duration is not None and min <= duration <= max:
                 uuids.append(uuid)
         return uuids
+
+    def genre(self, sub="") -> list:
+        return self.search_by_attribute("genere", sub)
 
     def title(self, sub="") -> list:
         return self.search_by_attribute("title", sub)
@@ -52,15 +60,12 @@ class SearchMetadata:
     def composer(self, sub="") -> list:
         return self.search_by_attribute("composer", sub)
 
-    def genre(self, sub="") -> list:
-        return self.search_by_attribute("genre", sub)
-
     def date(self, sub="") -> list:
         return self.search_by_attribute("date", sub)
 
     def comment(self, sub="") -> list:
         return self.search_by_attribute("comment", sub)
-
+    
     def and_operator(self, list1: list, list2: list) -> list:
         return list(set(list1) & set(list2))
 

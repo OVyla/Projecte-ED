@@ -13,6 +13,7 @@ class VideoFiles:
                     dels MP4 existents dins la col·lecció de vídeos.
     """
     __slots__ = ['_files', '_added', '_removed']
+
     def __init__(self):
         self._files = []
         self._added = []
@@ -40,6 +41,9 @@ class VideoFiles:
         for root, dirs, files in os.walk(path):
             for filename in files:
                 if filename.lower().endswith('.mp4'):
+                  #  absolute_path = os.path.join(root, filename)
+                   # relative_path = os.path.relpath(absolute_path, path)
+                    #self._files.append(relative_path)
                     self._files.append(os.path.join(root, filename))
         
         for file in self._files:
@@ -77,17 +81,17 @@ class VideoFiles:
     def __iter__(self):
         return iter(self._files)
     
-    def __eq__(self, other):
-        if not isinstance(other, VideoFiles):
-            return NotImplemented
-        return self._files == other._files
+    #def __eq__(self, other):
+     #   if not isinstance(other, VideoFiles):
+      #      return NotImplemented
+       # return self._files == other._files
     
-    def __hash__(self):
-        return hash(tuple(self._files))
+    #def __hash__(self):
+     #   return hash(tuple(self._files))
     
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    #def __ne__(self, other):
+     #   return not self.__eq__(other)
     
-    def __lt__(self, other):
-        return len(self._files) < len(other._files)
+    #def __lt__(self, other):
+     #   return len(self._files) < len(other._files)
                                            

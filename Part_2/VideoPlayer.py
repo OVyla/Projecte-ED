@@ -12,8 +12,11 @@ import os
 class VideoPlayer:
     __slots__ = ['_video_data']
 
-    def __init__(self, obj_video_data):
-        self._video_data = obj_video_data
+    def __init__(self, *args):
+        if len(args) != 1 or not isinstance(args[0], VideoData.VideoData):
+            raise NotImplementedError("Cal passar exactament un objecte de tipus VideoData.VideoData.")
+        self._video_data = args[0]
+
 
     def print_video(self, uuid: str) -> None:
         print("Duració:", self._video_data.get_duration(uuid))
@@ -26,11 +29,12 @@ class VideoPlayer:
         print("Comentari:", self._video_data.get_comment(uuid))
 
     def play_file(self, file: str) -> None:
-        if not os.path.isfile:
-            return None
-        if file not in self._video_data._files:
+        if not os.path.exists(file):
             return None
         uuid = cfg.get_uuid(cfg.get_canonical_pathfile(file))
+        
+        if uuid not in self._video_data._graph:
+            return None
         duracio = self._video_data.get_duration(uuid)
         try:
             player = vlc.MediaPlayer(file)
@@ -53,7 +57,9 @@ class VideoPlayer:
         return player
 
     def play_video(self, uuid: str, mode: int) -> None:
-        if uuid not in self._video_data._files:
+        
+        if uuid not in self._video_data:
+            print('Video no afegit.')
             return None
         if not isinstance(mode, int):
             return None
@@ -76,6 +82,9 @@ class VideoPlayer:
     
     def __len__(self):
         return len(self._video_data)
+    
+    def __contains__(self, uuid):
+        return uuid in self._video_data
     
     def __iter__(self):
         return iter(self._video_data)

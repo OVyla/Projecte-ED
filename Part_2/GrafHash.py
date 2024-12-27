@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 27 15:39:10 2019
-
-@author: gemma
-"""
 import copy
 import math
 import ElementData
@@ -35,35 +30,37 @@ class GrafHash:
 ################################Definicio Class _Vertex       
     __slots__ = ['_nodes', '_out', '_in', '_ponderat']
 
-    def __init__(self, ln=[],lv=[],lp=[],digraf=False):
+    def __init__(self, ln=[],lv=[],lp=[],digraf=True):
         """Crea graf (no dirigit per defecte, digraf si dirigit es True.
         """
         self._nodes = {}
-        self._out = { }
-        self._in={} if digraf else self._out
+        self._out = {}
+        if digraf:
+            self._in={}
         #nodes={}
-        for n in ln:
-            v=self.insert_vertex(n)
+        self._ponderat = True
+        #for n in ln:
+         #   v=self.insert_vertex(n)
             #nodes[n]=v
-        if lp==[]:
-            self._ponderat=False
-            for v in lv:
-                self.insert_edge(v[0],v[1])
-        else:
-            self._ponderat=True
-            for vA,pA in zip(lv,lp):
-                self.insert_edge(vA[0],vA[1],pA)
+        #if lp==[]:
+            #self._ponderat=False
+         #   for v in lv:
+          #      self.insert_edge(v[0],v[1])
+        #else:
+            #self._ponderat=True
+         #   for vA,pA in zip(lv,lp):
+          #      self.insert_edge(vA[0],vA[1],pA)
     
     def es_digraf(self):
-        return self._out!=self._in
+        return self._in != None
     
     def getOut(self):
         return self._out
         
     def insert_vertex(self, key, e: ElementData):
-        v= self.Vertex(key, e)
+        v = self.Vertex(key, e)
         self._nodes[key] = v
-        self._out[key] = { }
+        self._out[key] = {}
         if self.es_digraf():
             self._in[key] = {}
         return v
@@ -77,14 +74,24 @@ class GrafHash:
     def __contains__(self, key):
         return key in self._nodes
     
+    def _contains_file(self, file):
+        for uuid in self:
+            if self._nodes[uuid]._element_data.filename == file:
+                return True
+        return False
+        
     def __len__(self):
         return len(self._nodes)
     
+    def __eq__(self, other):
+        return self._nodes == other._nodes
+    
     def __iter__(self):
-        return iter(self._nodes.values())
+        return iter(self._nodes.keys())
     
     def __getitem__(self, key):
-        return self._nodes[key]
+        if key in self._nodes:
+            return self._nodes[key]._element_data
     
     def __delitem__(self, key):
         if key in self._nodes:
@@ -96,7 +103,7 @@ class GrafHash:
             raise KeyError(f"El node {key} no existeix en el graf.")
     
     def __repr__(self):
-        return f"GrafHash(nodes={self._nodes}, es_digraf={self.es_digraf()}, es_ponderat={self._ponderat()})"
+        return f"GrafHash(nodes={len(self._nodes)}, es_digraf={self.es_digraf()}, es_ponderat={self._ponderat})"
 
     def insert_edge(self, n1, n2, p1=1):
         
@@ -173,7 +180,7 @@ class GrafHash:
     
     def minDistance(self, dist, visitat):
         min = math.inf
-        min_index = None
+        min_index = None  # Valor por defecto si no se encuentra un mínimo válido
         for node,distancia in dist.items():
             if distancia < min and node not in visitat:
                 min = distancia
@@ -184,63 +191,123 @@ class GrafHash:
         if n not in self._nodes:
             raise ValueError(f"El nodo {n} no existe en el grafo.")
 
-        dist = {}  
-        anterior = {}  
-        visitat = [] 
+        dist = {}  # Diccionario para las distancias mínimas desde 'n'
+        anterior = {}  # Diccionario para almacenar el nodo previo en el camino más corto
+        visitat = []  # Lista de nodos ya visitados
 
+        # Inicialización
         for vertex in self._nodes:
-            dist[vertex] = math.inf  
-            anterior[vertex] = None  
-        dist[n] = 0
+            dist[vertex] = math.inf  # Todas las distancias iniciales a infinito
+            anterior[vertex] = None  # Sin nodos previos al inicio
+        dist[n] = 0  # La distancia al nodo inicial es cero
 
+        # Iterar por todos los nodos del grafo
         for i in range(len(self._nodes)):
+            # Encontrar el nodo no visitado con la distancia mínima
             u = self.minDistance(dist, visitat)
-            if u is None:  
+            if u is None:  # No hay más nodos alcanzables
                 break
-            visitat.append(u) 
+            visitat.append(u)  # Marcar el nodo como visitado
 
-            for vertex in self._out[u]:  
-                if vertex not in visitat:  
-                    nueva_dist = dist[u] + self._out[u][vertex]  
-                    if nueva_dist < dist[vertex]:  
+            # Relajar las aristas del nodo 'u'
+            for vertex in self._out[u]:  # Recorrer los vecinos de 'u'
+                if vertex not in visitat:  # Solo considerar nodos no visitados
+                    nueva_dist = dist[u] + self._out[u][vertex]  # Distancia acumulada
+                    if nueva_dist < dist[vertex]:  # Si encontramos un camino más corto
                         dist[vertex] = nueva_dist
-                        anterior[vertex] = u  
+                        anterior[vertex] = u  # Actualizamos el nodo previo
 
+        # Remover el nodo inicial del diccionario anterior para cumplir con la salida esperada
         anterior.pop(n, None)
 
-        return dist, anterior
+        return dist, anterior  # Devolvemos las distancias mínimas y los caminos     
         
     def dijkstraModif(self,n1,n2):
         dist, anterior = self.dijkstra(n1)
-        cami = []
+        camino = []
         actual = n2
 
+        # Reconstruir el camino desde n2 hacia n1
         while actual is not None:
-            cami.insert(0, actual)  
+            camino.insert(0, actual)  # Insertar al principio para invertir el orden
             actual = anterior[actual]
 
-        
-        if cami[0] != n1:
-            return None  
+        # Verificar si el camino llega al origen
+        if camino[0] != n1:
+            return None  # No hay camino válido
 
-        return cami
+        return camino
 
     def camiMesCurt(self, n1, n2):
         dist, anterior = self.dijkstra(n1)
 
         cami = []
         actual = n2
-        while actual is not None: 
+        while actual is not None:  # Continua hasta alcanzar el nodo inicial
             cami.insert(0, actual)
-            actual = anterior.get(actual)  
+            actual = anterior.get(actual)  # Usa .get() para evitar KeyError
 
         if cami[0] != n1:
-            raise ValueError(f"No hi ha cami entre {n1} i {n2}")
+            return
 
         return cami
     
+    def cicles(self):
+        cicles = []
+        visitats = set()
     
+        for v1 in self._out:
+            visitats.add(v1)
+            for v2 in self.edges(v1):
+                if v2 in visitats:
+                    continue
+                for v3 in self.edges(v2):
+                    if v3 in visitats or v3 == v1:
+                        continue
+                    if v1 in self._out[v3]:
+                        cicle = sorted([v1, v2, v3])
+                        if cicle not in cicles:
+                            cicles.append(cicle)
+        return cicles
     
+    def donaPath(self,n1, n2, visitat):
+        n = visitat[n2]
+        path = [n2]
+        while n != n1:
+            path.append(n)
+            n = visitat[n]
+        path.append(n)
+        path.reverse()
+        return path
+    
+    def edges_out(self):
+        pass
+    
+    def edges_in(self):
+        pass
+    def grauPesOut(self):
+        pass
+    def grauPesIn(self):
+        pass
+
+    
+    def rank(self, node):
+        return sum(self._out[node].values()) + sum(self._in[node].values())
+    
+    def next_videos(self, uuid):
+        for nod_post, pes in self._out[uuid].items():
+            yield (nod_post, pes)
+    
+    def previous_videos(self, uuid):
+        for nod_post, pes in self._in[uuid].items():
+            yield (nod_post, pes)
+    
+    def get_pes_aresta(self, uuid1, uuid2):
+        return self._out[uuid1][uuid2]
+    
+    def augmentaPes(self, n1, n2):
+        self._out[n1][n2] += 1
+        self._in[n2][n1] += 1
     def __str__(self):
         cad="===============GRAF===================\n"
      
