@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Created on Fri Sep 27 15:39:10 2019
+
+@author: gemma
+"""
 import copy
 import math
 import ElementData

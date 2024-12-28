@@ -12,74 +12,71 @@ class VideoFiles:
     RESPONSABILITAT: Revisar el contingut del disc per obtenir les localitzacions
                     dels MP4 existents dins la col·lecció de vídeos.
     """
-    __slots__ = ['_files', '_added', '_removed']
+    __slots__ = ['__files', '__added', '__removed']
 
     def __init__(self):
-        self._files = []
-        self._added = []
-        self._removed = []
+        self.__files = []
+        self.__added = []
+        self.__removed = []
         
     
     def get_files(self) -> list:
-        return self._files
+        return self.__files
     
     def __getitem__(self, item: int) -> str:
-        return self._files[item]
+        return self.__files[item]
     
     def reload_fs(self, path: str) -> None:
         """
         Carrega el sistema de fitxers i actualitza la llista d'arxius MP4.
         """
-        files_anterior = copy.deepcopy(self._files)
-        added_anterior = copy.deepcopy(self._added)
-        removed_anterior = copy.deepcopy(self._removed)
-        self._files = []
-        self._added = []
-        self._removed = []
+        files_anterior = copy.deepcopy(self.__files)
+        added_anterior = copy.deepcopy(self.__added)
+        removed_anterior = copy.deepcopy(self.__removed)
+        self.__files = []
+        self.__added = []
+        self.__removed = []
         
         
         for root, dirs, files in os.walk(path):
             for filename in files:
                 if filename.lower().endswith('.mp4'):
-                  #  absolute_path = os.path.join(root, filename)
-                   # relative_path = os.path.relpath(absolute_path, path)
-                    #self._files.append(relative_path)
-                    self._files.append(os.path.join(root, filename))
+                    self.__files.append(os.path.join(root, filename))
         
-        for file in self._files:
+        for file in self.__files:
             if file not in files_anterior:
-                self._added.append(file)
+                self.__added.append(file)
         
         for file in files_anterior:
-            if file not in self._files:
-                self._removed.append(file)
+            if file not in self.__files:
+                self.__removed.append(file)
                 
 
     def files_added(self) -> list:
         """
         Retorna una llista dels arxius MP4 que han estat afegits des de l'últim reload.
         """
-        return self._added
+        return self.__added
 
     def files_removed(self) -> list:
         """
         Retorna una llista dels arxius MP4 que han estat eliminats des de l'últim reload.
         """
-        return self._removed
+        return self.__removed
     
     def __str__(self):
         cad = '________VIDEO FILES_____\n'
-        cad += 'Num fitxers llegits: '+str(len(self._files))
+        cad += 'Num fitxers llegits: '+str(len(self.__files))
         return cad
     
     def __repr__(self):
-        return f"VideoFiles({len(self._files)} files)"
+        return f"VideoFiles({len(self.__files)} files)"
     
     def __len__(self):
-        return len(self._files)
+        return len(self.__files)
     
     def __iter__(self):
-        return iter(self._files)
+        return iter(self.__files)
     
     #def __eq__(self, other):
      #   if not isinstance(other, VideoFiles):
