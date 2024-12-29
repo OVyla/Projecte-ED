@@ -54,8 +54,7 @@ class VideoData:
     def get_path(self,uuid):
         if uuid in self.__graf:
             return self.__graf.get(uuid).path
-        
-   
+            
     def get_duration(self,uuid):
         if uuid in self.__graf:
             return self.__graf.get(uuid).duration
@@ -119,38 +118,54 @@ class VideoData:
         return len(self) < len(other)
     
     def read_playlist(self, obj_playlist: PlayList):
-        pass
-        """n_arestes = len(obj_playlist)-1
+        n_arestes = len(obj_playlist)-1
         for i in range(n_arestes):
             uuid_1 = obj_playlist[i]
             uuid_2 = obj_playlist[i+1]
-            veins_1 = list(self.__graf.edges(uuid_1))
-            if uuid_2 in veins_1:
-                self.__graf.augmentaPes(uuid_1,uuid_2)
-            else:
-                self.__graf.insert_edge(uuid_1, uuid_2)"""
+            if uuid_1 in self.__graf and uuid_2 in self.__graf:
+                out_1 = list(self.__graf.edges_out(uuid_1))
+                if uuid_2 in out_1:
+                    self.__graf.augmentaPes(uuid_1,uuid_2)
+                else:
+                    self.__graf.insert_edge(uuid_1, uuid_2)
     
     def get_video_rank(self, uuid: str) -> int:
-        pass
-        #return self.__graf.rank(uuid)
+        if uuid in self.__graf:
+            return self.__graf.rank(uuid)
     
     def get_next_videos(self, uuid: str):
-        pass
-        #for nod_post, pes in self.__graf.next_videos(uuid):
-         #   yield (nod_post, pes)
+        if uuid in self.__graf:
+            for uuid_out in self.__graf.edges_out(uuid):
+                yield (uuid_out, self.__graf.get_pes_aresta(uuid, uuid_out))
     
     def get_previous_videos(self,uuid: str):
-        pass
-        #for nod_post, pes in self.__graf.previous_videos(uuid):
-         #   yield (nod_post, pes)
+        if uuid in self.__graf:
+            for uuid_in in self.__graf.edges_in(uuid):
+                yield (uuid_in, self.__graf.get_pes_aresta(uuid_in, uuid))
     
     def get_video_distance(self,uuid1:str,uuid2:str):
-        pass
-        """cami = self.__graf.camiMesCurt(uuid1, uuid2)
-        if cami:
-            valor = 0
-            for i in range(len(cami)-1):
-                valor += self.__graf.get_pes_aresta(cami[i], cami[i+1])
-            return (len(cami)-1, valor)
+        if uuid1 in self.__graf and uuid2 in self.__graf:
+            cami = self.__graf.camiMesCurt(uuid1, uuid2)
+            if cami:
+                valor = 0
+                for i in range(len(cami)-1):
+                    valor += self.__graf.get_pes_aresta(cami[i], cami[i+1])
+                return (len(cami)-1,valor)
+            else:
+                return (0,0)
         else:
-            return (0,0)"""
+            return (0,0)
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            

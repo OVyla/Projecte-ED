@@ -15,7 +15,9 @@ class SearchMetadata:
         uuids = []
         if not isinstance(sub, str):
             return []
-        
+        if sub == "":
+            return self.__videodata._get_uuids()
+            
         for uuid in self.__videodata._get_uuids():
             try:
                 method = getattr(self.__videodata, f"get_{attribute}", None)
@@ -30,7 +32,7 @@ class SearchMetadata:
             except Exception:
                 print(f"Error amb UUID {uuid}")
         return uuids
-
+    
     def duration(self, min: int, max: int) -> list:
         if not isinstance(min, int) or not isinstance(max, int):
             return []
@@ -44,7 +46,7 @@ class SearchMetadata:
                 if uuid not in uuids:
                     uuids.append(uuid)
         return uuids
-
+    
     def genre(self, sub="") -> list:
         return self.search_by_attribute("genere", sub)
 
@@ -77,16 +79,16 @@ class SearchMetadata:
         return list(set(list1) | set(list2))
 
     def __str__(self):
-        return str(self.__videodata)
+        return f"SearchMetadata(videodata={repr(self.__videodata)})"
 
     def __repr__(self):
         return f"SearchMetadata(videodata={repr(self.__videodata)})"
     
-    def __len__(self):
-        return len(self.__videodata)
+    #def __len__(self):
+     #   return len(self.__videodata)
     
-    def __iter__(self):
-        return iter(self.__videodata)
+    #def __iter__(self):
+     #   return iter(self.__videodata)
     
     #def __eq__(self, other):
      #   if not isinstance(other, SearchMetadata):
@@ -103,8 +105,7 @@ class SearchMetadata:
      #   return len(self.__videodata) < len(other.__videodata)
     
     def get_similar(self, A: str, max_list: int = 25) -> list:
-        pass
-        """assert max_list <= 25
+        assert max_list <= 25
         semblances = {} # uuid: semblança
         for path in self.__videodata:
             B = str(cfg.get_uuid(cfg.get_canonical_pathfile(path)))
@@ -121,12 +122,10 @@ class SearchMetadata:
             semblances[B] = AB + BA
         
         uuids_ordenats = sorted(semblances.items(), key=lambda item: (-item[1], item[0]))
-        return [uuid for uuid, _ in uuids_ordenats[:max_list]]"""
+        return [uuid for uuid, _ in uuids_ordenats[:max_list]]
     
     def get_auto_play(self, N: int = 25) -> list:
-        pass
-        
-        """ranks = {}  # uuid: rank
+        ranks = {}  # uuid: rank
         for path in self.__videodata:
             uuid = str(cfg.get_uuid(cfg.get_canonical_pathfile(path)))
             ranks[uuid] = self.__videodata.get_video_rank(uuid)
@@ -163,7 +162,7 @@ class SearchMetadata:
 
         result.extend([None] * (N - len(result)))
         
-        return result"""
+        return result
 
                 
             

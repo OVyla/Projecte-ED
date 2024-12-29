@@ -34,10 +34,11 @@ class PlayList:
         return self.__videos
 
     def play(self, mode=1) -> None:
-        """Reprodueix tots els videos de la llista i els de la llista enllaçada"""
-        for video in self.__videos:
+        """Reprodueix tots els videos de la llista"""
+        
+        for uuid in self.__videos:
             try:
-                self.__v_player.play_video(video, mode)
+                self.__v_player.play_video(uuid, mode)
             except Exception:
                 print("ERROR en la reproduccio del video")
                 continue
@@ -50,16 +51,16 @@ class PlayList:
         """Elimina el primer vídeo de la llista."""
         if self.__videos:
             self.__videos.pop(0)
-        else:
-            print("ERROR: No hi ha vídeos a eliminar.")
+        #else:
+         #   print("ERROR: No hi ha vídeos a eliminar.")
 
 
     def remove_last_video(self) -> None:
         """Elimina ultim vídeo de la llista"""
         if self.__videos:
             self.__videos.pop()
-        else:
-            print("ERROR: No hi ha vídeos a eliminar.")
+        #else:
+         #   print("ERROR: No hi ha vídeos a eliminar.")
         
     def __contains__(self, uuid):
         return uuid in self.__videos
@@ -77,7 +78,8 @@ class PlayList:
         return f"PlayList({len(self.__videos)} videos)"
 
     def __iter__(self):
-        return iter(self.__videos)
+        for uuid in self.__videos:
+            yield uuid
     
     def __getitem__(self, num:int) -> str:
         return self.__videos[num]
@@ -97,6 +99,8 @@ class PlayList:
         return len(self.__videos) < len(other.__videos)
     
     def read_list(self, p_llista: list):
-        self.__videos = []
-        for uuid in p_llista:
-                self.add_video_at_end(uuid)
+        if p_llista:
+            self.__videos = []
+            for uuid in p_llista:
+                if uuid and not uuid in self.__videos:
+                    self.add_video_at_end(uuid)

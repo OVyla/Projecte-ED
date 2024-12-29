@@ -77,18 +77,4 @@ class VideoFiles:
     
     def __iter__(self):
         return iter(self.__files)
-    
-    #def __eq__(self, other):
-     #   if not isinstance(other, VideoFiles):
-      #      return NotImplemented
-       # return self._files == other._files
-    
-    #def __hash__(self):
-     #   return hash(tuple(self._files))
-    
-    #def __ne__(self, other):
-     #   return not self.__eq__(other)
-    
-    #def __lt__(self, other):
-     #   return len(self._files) < len(other._files)
                                            

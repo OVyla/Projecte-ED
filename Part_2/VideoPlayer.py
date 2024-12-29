@@ -97,5 +97,8 @@ class VideoPlayer:
     
     def __lt__(self, other):
         return len(self.__video_data) < len(other.__video_data)
+    
+    def __repr__(self):
+        return f"VideoPlayer(VideoData={len(self.__video_data)})"
 
 
