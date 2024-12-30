@@ -12,16 +12,16 @@ class SearchMetadata:
         self.__videodata = args[0]
         
     def search_by_attribute(self, attribute: str, sub: str) -> list:
-        uuids = []
+        
         if not isinstance(sub, str):
             return []
         if sub == "":
             return self.__videodata._get_uuids()
-            
+        uuids = []   
         for uuid in self.__videodata._get_uuids():
             try:
                 method = getattr(self.__videodata, f"get_{attribute}", None)
-                if method is None:
+                if method is None or not callable(method):
                     print(f"L'atribut '{attribute}' no es pot cridar.")
                     return []
 
@@ -36,7 +36,7 @@ class SearchMetadata:
     def duration(self, min: int, max: int) -> list:
         if not isinstance(min, int) or not isinstance(max, int):
             return []
-        if min < -1 or max < -1 or min > max:
+        if min < 0 or max < 0 or min > max:
             return []
 
         uuids = []
@@ -46,9 +46,9 @@ class SearchMetadata:
                 if uuid not in uuids:
                     uuids.append(uuid)
         return uuids
-    
+        
     def genre(self, sub="") -> list:
-        return self.search_by_attribute("genere", sub)
+        return self.search_by_attribute("genre", sub)
 
     def title(self, sub="") -> list:
         return self.search_by_attribute("title", sub)
@@ -105,7 +105,8 @@ class SearchMetadata:
      #   return len(self.__videodata) < len(other.__videodata)
     
     def get_similar(self, A: str, max_list: int = 25) -> list:
-        assert max_list <= 25
+        if max_list > 25:
+            max_list = 25
         semblances = {} # uuid: semblança
         for path in self.__videodata:
             B = str(cfg.get_uuid(cfg.get_canonical_pathfile(path)))
@@ -125,6 +126,15 @@ class SearchMetadata:
         return [uuid for uuid, _ in uuids_ordenats[:max_list]]
     
     def get_auto_play(self, N: int = 25) -> list:
+        
+        if not isinstance(N, int):
+            return []
+        
+        if N > 25 or N > len(self.__videodata):
+            if len(self.__videodata) < 25:
+                N = len(self.__videodata)
+            else:
+                N = 25
         ranks = {}  # uuid: rank
         for path in self.__videodata:
             uuid = str(cfg.get_uuid(cfg.get_canonical_pathfile(path)))
@@ -144,7 +154,7 @@ class SearchMetadata:
 
         total_simil_25_list = sorted(
             total_simil_25_set,
-            key=lambda uuid: (-ranks.get(uuid, 0), uuid)
+            key=lambda uuid: (-self.__videodata.get_video_rank(uuid), uuid)
         )[:25]
 
         idv_semblanca = {uuid: 0 for uuid in total_simil_25_list}
@@ -163,6 +173,10 @@ class SearchMetadata:
         result.extend([None] * (N - len(result)))
         
         return result
+        
+        
+    def debug_test_261():
+        return True
 
                 
             

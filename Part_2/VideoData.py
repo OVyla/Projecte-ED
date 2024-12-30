@@ -49,7 +49,12 @@ class VideoData:
 
     def get_filename(self,uuid):
         if uuid in self.__graf:
-            return self.__graf.get(uuid).filename
+            #filename = self.__graf.get(uuid).path
+            #return filename[len(cfg.get_root())+1:]
+            self.load_metadata(uuid)
+            return self.__graf[uuid].filename
+        #else:
+         #   return 'cagondeu'
    
     def get_path(self,uuid):
         if uuid in self.__graf:
@@ -57,7 +62,10 @@ class VideoData:
             
     def get_duration(self,uuid):
         if uuid in self.__graf:
-            return self.__graf.get(uuid).duration
+        #return self.__graf.get(uuid).duration
+            return getattr(self.__graf.get(uuid), 'duration', None)
+        #else:
+         #   return 'cagondeu'
         
        
     def get_title(self,uuid):
@@ -97,6 +105,10 @@ class VideoData:
     
     def __contains__(self, uuid):
         return uuid in self.__graf
+    
+    #def __getitem__(self, uuid):
+     #   if uuid in self.__graf:
+      #      return self.__graf[]
 
     def __iter__(self):
         for uuid in self.__graf:
@@ -134,14 +146,10 @@ class VideoData:
             return self.__graf.rank(uuid)
     
     def get_next_videos(self, uuid: str):
-        if uuid in self.__graf:
-            for uuid_out in self.__graf.edges_out(uuid):
-                yield (uuid_out, self.__graf.get_pes_aresta(uuid, uuid_out))
+        return iter(self.__graf.next_videos(uuid))
     
     def get_previous_videos(self,uuid: str):
-        if uuid in self.__graf:
-            for uuid_in in self.__graf.edges_in(uuid):
-                yield (uuid_in, self.__graf.get_pes_aresta(uuid_in, uuid))
+        return iter(self.__graf.previous_videos(uuid))
     
     def get_video_distance(self,uuid1:str,uuid2:str):
         if uuid1 in self.__graf and uuid2 in self.__graf:
@@ -155,8 +163,6 @@ class VideoData:
                 return (0,0)
         else:
             return (0,0)
-            
-            
             
             
             

@@ -6,7 +6,6 @@ import vlc
 import os
 from pathlib import Path
 
-
 class PlayList:
     
     __slots__ = ['__v_id','__v_player','__videos']
@@ -20,22 +19,24 @@ class PlayList:
     
     def load_file(self, file:str):
         self.__videos = []
+        
         if not file.endswith(".m3u"):
             return
-                
-        with open(file, "r", errors = 'ignore') as fitxer:
-            for linia in fitxer:
-                linia = linia.strip()
-                if linia and not linia.startswith("#") and linia.endswith(".mp4"):
-                    uuid = self.__v_id.get_uuid(linia)
-                    if uuid and uuid not in self.__videos:
-                        self.__videos.append(uuid)
-       
-        return self.__videos
+        
+        try:    
+            with open(file, "r", encoding='utf-8', errors = 'ignore') as fitxer:
+                for linia in fitxer:
+                    linia = linia.strip()
+                    if linia and not linia.startswith("#") and linia.endswith(".mp4"):
+                        uuid = self.__v_id.get_uuid(linia)
+                        if uuid and uuid not in self.__videos:
+                            self.__videos.append(uuid)
+        except:
+            raise FileNotFoundError
+        #return self.__videos
 
     def play(self, mode=1) -> None:
         """Reprodueix tots els videos de la llista"""
-        
         for uuid in self.__videos:
             try:
                 self.__v_player.play_video(uuid, mode)
