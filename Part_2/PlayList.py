@@ -29,11 +29,11 @@ class PlayList:
                     linia = linia.strip()
                     if linia and not linia.startswith("#") and linia.endswith(".mp4"):
                         uuid = self.__v_id.get_uuid(linia)
+                        
                         if uuid and uuid not in self.__videos:
                             self.__videos.append(uuid)
         except:
             raise FileNotFoundError
-        #return self.__videos
 
     def play(self, mode=1) -> None:
         """Reprodueix tots els videos de la llista"""

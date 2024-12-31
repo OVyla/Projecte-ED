@@ -84,26 +84,6 @@ class SearchMetadata:
     def __repr__(self):
         return f"SearchMetadata(videodata={repr(self.__videodata)})"
     
-    #def __len__(self):
-     #   return len(self.__videodata)
-    
-    #def __iter__(self):
-     #   return iter(self.__videodata)
-    
-    #def __eq__(self, other):
-     #   if not isinstance(other, SearchMetadata):
-      #      return
-       # return self.__videodata == other.__videodata
-    
-    #def __hash__(self):
-     #   return hash(tuple(self.__videodata))
-    
-    #def __ne__(self, other):
-     #   return not self.__eq__(other)
-    
-    #def __lt__(self, other):
-     #   return len(self.__videodata) < len(other.__videodata)
-    
     def get_similar(self, A: str, max_list: int = 25) -> list:
         if max_list > 25:
             max_list = 25

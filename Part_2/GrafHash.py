@@ -58,10 +58,8 @@ class GrafHash:
         return v
     
     def get(self, key) -> ElementData:
-        #if key in self.__nodes:
-        return self.__nodes[key]._element_data
-        #else:
-         #   return None
+        if key in self.__nodes:
+            return self.__nodes[key]._element_data
         
     def __contains__(self, key):
         return key in self.__nodes

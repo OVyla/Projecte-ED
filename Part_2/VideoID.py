@@ -14,6 +14,7 @@ class VideoID:
     
     def generate_uuid(self, file="") -> str:
         uuid = str(cfg.get_uuid(cfg.get_canonical_pathfile(file)))
+        #path = cfg.get_canonical_pathfile(file)
         if uuid in self.__files.values():
             print("Nou uuid ha colisionat amb un uuid anterior. Operació cancelada.")
             return None
@@ -54,7 +55,7 @@ class VideoID:
         return hash(self.__files)
     
     def __iter__(self):
-        return iter(self.__files.items())
+        return iter(self.__files.keys())
     
     def __ne__(self, other):
         return not self.__eq__(other)

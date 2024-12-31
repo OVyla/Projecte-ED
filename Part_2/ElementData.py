@@ -19,6 +19,25 @@ class ElementData:
         self.__path = os.path.join(cfg.get_root(), filename)
 
     @property
+    def duration(self):
+        return self.__duration
+
+    @duration.setter
+    def duration(self, value):
+        #if not value:
+         #   value = -1
+        self.__duration = value
+
+    @property
+    def filename(self):
+        return self.__filename
+
+    @filename.setter
+    def filename(self, value):
+        if value != self.__filename:
+            raise ValueError
+    
+    @property
     def title(self):
         return self.__title
 
@@ -87,25 +106,6 @@ class ElementData:
         #if not value:
          #   value = "None"
         self.__comment = value
-
-    @property
-    def duration(self):
-        return self.__duration
-
-    @duration.setter
-    def duration(self, value):
-        #if not value:
-         #   value = -1
-        self.__duration = value
-
-    @property
-    def filename(self):
-        return self.__filename
-
-    @filename.setter
-    def filename(self, value):
-        if value != self.__filename:
-            raise ValueError
         
     @property
     def path(self):

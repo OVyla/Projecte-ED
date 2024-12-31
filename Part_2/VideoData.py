@@ -49,24 +49,15 @@ class VideoData:
 
     def get_filename(self,uuid):
         if uuid in self.__graf:
-            #filename = self.__graf.get(uuid).path
-            #return filename[len(cfg.get_root())+1:]
-            self.load_metadata(uuid)
-            return self.__graf[uuid].filename
-        #else:
-         #   return 'cagondeu'
-   
-    def get_path(self,uuid):
-        if uuid in self.__graf:
-            return self.__graf.get(uuid).path
+            return self.__graf.get(uuid).filename
             
     def get_duration(self,uuid):
         if uuid in self.__graf:
-        #return self.__graf.get(uuid).duration
-            return getattr(self.__graf.get(uuid), 'duration', None)
-        #else:
-         #   return 'cagondeu'
-        
+            return self.__graf.get(uuid).duration
+         
+    def get_path(self,uuid):
+        if uuid in self.__graf:
+            return self.__graf.get(uuid).path    
        
     def get_title(self,uuid):
         if uuid in self.__graf:
@@ -105,15 +96,10 @@ class VideoData:
     
     def __contains__(self, uuid):
         return uuid in self.__graf
-    
-    #def __getitem__(self, uuid):
-     #   if uuid in self.__graf:
-      #      return self.__graf[]
 
     def __iter__(self):
         for uuid in self.__graf:
             yield self.__graf.get(uuid).path
-        #return iter(self.__graf)
 
     def __eq__(self, other):
         if not isinstance(other, VideoData):

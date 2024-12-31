@@ -70,7 +70,11 @@ class VideoPlayer:
             
         return None
             
-            
+    #def add_video(self, uuid, file):
+     #   self.__video_data.add_video(uuid, file)
+    
+    def load_metadata(self, uuid):
+        self.__video_data.load_metadata(uuid)        
     
     def __str__(self):
         return f"VideoPlayer: {len(self.__video_data)} vídeos disponibles."

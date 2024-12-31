@@ -31,17 +31,18 @@ class VideoFiles:
         Carrega el sistema de fitxers i actualitza la llista d'arxius MP4.
         """
         files_anterior = copy.deepcopy(self.__files)
-        added_anterior = copy.deepcopy(self.__added)
-        removed_anterior = copy.deepcopy(self.__removed)
         self.__files = []
         self.__added = []
         self.__removed = []
         
-        
+        root = path+'/'
         for root, dirs, files in os.walk(path):
             for filename in files:
                 if filename.lower().endswith('.mp4'):
-                    self.__files.append(os.path.join(root, filename))
+                    absolut = os.path.join(root, filename)
+                    if root in absolut:
+                        absolut.replace(root,'')
+                    self.__files.append(absolut)
         
         for file in self.__files:
             if file not in files_anterior:
