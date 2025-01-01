@@ -15,42 +15,39 @@ class VideoFiles:
     __slots__ = ['__files', '__added', '__removed']
 
     def __init__(self):
-        self.__files = []
-        self.__added = []
-        self.__removed = []
+        """
+        Inicialitza les llistes de fitxers, afegits i eliminats.
+        """
+        self.__files = []    # Llista de fitxers MP4
+        self.__added = []    # Llista de fitxers afegits
+        self.__removed = []  # Llista de fitxers eliminats
         
-    
-    def get_files(self) -> list:
-        return self.__files
-    
-    def __getitem__(self, item: int) -> str:
-        return self.__files[item]
     
     def reload_fs(self, path: str) -> None:
         """
         Carrega el sistema de fitxers i actualitza la llista d'arxius MP4.
         """
-        files_anterior = copy.deepcopy(self.__files)
-        self.__files = []
-        self.__added = []
-        self.__removed = []
+        files_anterior = copy.deepcopy(self.__files)  # Guarda l'estat anterior
+        self.__files = []  # Reinicia la llista de fitxers
+        self.__added = []  # Reinicia la llista de fitxers afegits
+        self.__removed = []  # Reinicia la llista de fitxers eliminats
         
         root = path+'/'
         for root, dirs, files in os.walk(path):
             for filename in files:
                 if filename.lower().endswith('.mp4'):
-                    absolut = os.path.join(root, filename)
-                    if root in absolut:
-                        absolut.replace(root,'')
-                    self.__files.append(absolut)
+                    file = os.path.join(root, filename)
+                    if root in file:
+                        file.replace(root,'') # Elimina el camí del directori root per guardar només el path relatiu
+                    self.__files.append(file)  # Afegeix el fitxer a la llista
         
         for file in self.__files:
             if file not in files_anterior:
-                self.__added.append(file)
+                self.__added.append(file)  # Afegeix a la llista d'afegits
         
         for file in files_anterior:
             if file not in self.__files:
-                self.__removed.append(file)
+                self.__removed.append(file)  # Afegeix a la llista d'eliminats
                 
 
     def files_added(self) -> list:
@@ -66,16 +63,27 @@ class VideoFiles:
         return self.__removed
     
     def __str__(self):
-        cad = '________VIDEO FILES_____\n'
-        cad += 'Num fitxers llegits: '+str(len(self.__files))
-        return cad
+        """
+        Retorna una representació en cadena de la classe.
+        """
+        return f"VideoFiles({len(self.__files)} files)"
     
     def __repr__(self):
+        """
+        Retorna una representació formal de la classe.
+        """
         return f"VideoFiles({len(self.__files)} files)"
     
     def __len__(self):
+        """
+        Retorna el nombre de fitxers en la col·lecció.
+        - int: Nombre de fitxers MP4.
+        """
         return len(self.__files)
     
     def __iter__(self):
+        """
+        Permet la iteració sobre els fitxers de vídeo.
+        """
         return iter(self.__files)
                                            
